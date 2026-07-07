@@ -54,13 +54,21 @@ Khi vào bất kỳ trang nào, hệ thống sẽ yêu cầu tài khoản.
 5. Ở góc trên bên phải có dấu **(+)** để tạo mới dữ liệu. Bấm vào bất kỳ ô nào để sửa dữ liệu, y hệt Excel!
 
 ### Bước 5: Cấp tài khoản cho nhân viên (Phân quyền)
-Nếu bạn muốn cấp tài khoản cho phòng ban khác nhưng không muốn họ phá dữ liệu:
-1. Đăng nhập vào trang Quản Lý (`http://localhost:8080`).
+Hệ thống đã được thiết lập sẵn cơ chế Phân Quyền Bảo Mật (RBAC) khắt khe chuẩn ERP. Dưới đây là danh sách các quyền đã được cấu hình sẵn:
+
+| Tên Quyền | Bảng được xem | Bảng được sửa/nhập liệu |
+|---|---|---|
+| **Administrator (Admin)** | TẤT CẢ (Không giới hạn) | TẤT CẢ (Không giới hạn) |
+| **PKT (Phòng Kỹ Thuật)** | Đơn hàng, Khuôn mẫu | Chỉ nhập liệu **Đơn hàng** (`don_hang`, `dat_khuon`) |
+| **PXCE (Phân Xưởng)** | Khuôn mẫu, Khuôn hỏng, Thanh lý | Toàn bộ khu vực **Khuôn mẫu** (Nhật ký, sửa chữa, v.v.) |
+| **Phong Ban (Các phòng khác)**| Tài liệu | CHỈ ĐỌC / Tải xuống (Không được sửa/xóa) |
+
+**Cách gán quyền cho nhân viên mới:**
+1. Đăng nhập vào trang Quản Lý (`http://localhost:8080`) bằng tài khoản Admin.
 2. Bấm vào biểu tượng **Bánh răng (Settings)** ở góc dưới cùng bên trái.
-3. Chọn **Roles & Policies** (Vai trò).
-   - Ở đây hệ thống đã tạo sẵn 4 quyền: *Administrator, Phong Ban, Phong Ky Thuat (PKT), Phan Xuong (PXCE)*. Mỗi quyền đã được khóa sẵn các tính năng.
-4. Chọn **Users Directory** (Người dùng) ngay phía trên nút Bánh răng.
-5. Bấm dấu **(+)** để tạo nhân viên mới: Nhập Tên, Email, Mật khẩu. Quan trọng nhất: Ở mục **Role**, hãy chọn quyền tương ứng cho nhân viên đó.
+3. Chọn **Users Directory** (Người dùng).
+4. Bấm dấu **(+)** để tạo nhân viên mới: Nhập Tên, Email, Mật khẩu. 
+5. Quan trọng nhất: Ở mục **Role**, hãy chọn quyền tương ứng trong bảng trên cho nhân viên đó.
 6. Gửi Email và Mật khẩu đó cho nhân viên. Khi nhân viên đăng nhập, họ sẽ chỉ nhìn thấy những gì được phép!
 
 ### Lưu ý quan trọng
