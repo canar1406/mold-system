@@ -68,4 +68,30 @@ Nếu bạn muốn cấp tài khoản cho phòng ban khác nhưng không muốn 
 - Lần sau mở máy tính lên, bạn lại bấm vào file `KHOI_DONG.bat` để bật lại hệ thống lên là xong.
 
 ---
+
+## 🌐 HƯỚNG DẪN TRUY CẬP TỪ MÁY KHÁC TRONG XƯỞNG (LAN / WIFI)
+
+Hệ thống được thiết kế để tất cả các máy tính, điện thoại, máy tính bảng dùng chung mạng Wifi/LAN trong xưởng đều có thể truy cập được, không cần cài đặt thêm gì trên các máy con này.
+
+### Bước 1: Lấy địa chỉ IP của máy chủ
+1. Trên máy chủ đang chạy hệ thống (máy bạn vừa click file `KHOI_DONG.bat`), bấm nút Windows, gõ `cmd` và ấn Enter.
+2. Gõ lệnh `ipconfig` và ấn Enter.
+3. Tìm dòng **IPv4 Address** (Ví dụ: `192.168.1.114`). Đây chính là địa chỉ của máy chủ.
+
+### Bước 2: Truy cập từ máy khác (Điện thoại, Laptop)
+Mở trình duyệt web (Chrome/Safari) trên máy khác và gõ:
+- Để xem Dashboard: `http://192.168.1.114:3000`
+- Để vào trang Quản lý (Directus): `http://192.168.1.114:8080`
+
+### 🛡 Lưu ý Quan Trọng Về Tường Lửa (Windows Firewall)
+Nếu các máy khác trong xưởng gõ địa chỉ IP như trên mà trình duyệt cứ xoay vòng tròn mãi không vào được, nghĩa là tường lửa của máy chủ đã chặn kết nối. Bạn cần mở cửa (Open Port) trên máy chủ:
+1. Bấm nút Windows, gõ `Windows Defender Firewall` -> Chọn **Advanced Settings**.
+2. Ở cột bên trái, chọn **Inbound Rules** -> Ở cột bên phải chọn **New Rule...**
+3. Chọn **Port** -> Chọn TCP -> Ở ô *Specific local ports* nhập vào: `3000, 3001, 8080, 5432`
+4. Bấm Next -> Chọn **Allow the connection** -> Bấm Next liên tục.
+5. Ở phần Name, đặt tên là "KM2100 System" -> Finish. 
+
+Bây giờ tất cả điện thoại và máy tính trong xưởng đã có thể truy cập và nhập liệu đồng thời siêu tốc!
+
+---
 *Phát triển bởi đội ngũ KM21.00 - Năm 2026*
