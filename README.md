@@ -7,7 +7,8 @@ Hệ thống quản lý khuôn đúc phiên bản Web hiện đại, được ch
 ## 🎉 CÁC TÍNH NĂNG MỚI NHẤT VỪA CẬP NHẬT
 - **Giao diện đẳng cấp (Logo & Bố cục):** Đã bổ sung Logo công ty với hiệu ứng bóng mờ nổi bật ở chính giữa. Thanh cuộn (scrollbar) được dời ra sát lề phải màn hình giúp thao tác cuộn chuột mượt mà và trực quan hơn.
 - **Bảng con thông minh (Subdatasheet):** Khắc phục triệt để lỗi "sổ ra 1 đống" khi tải dữ liệu lịch sử. Bảng con nay có thanh cuộn riêng, giới hạn chiều cao tối đa 250px và tự động đóng bảng cũ khi mở bảng mới.
-- **Khóa an toàn thông minh (Auto-Lock):** Các tính năng/bảng số liệu chưa được nâng cấp dữ liệu sẽ tự động chuyển thành hình Ổ khóa màu xám và vô hiệu hóa. Các nút thao tác phần Thanh Lý được khóa mờ màu vàng chuyên nghiệp theo đúng yêu cầu bảo mật.
+- **Phân quyền & Hồ sơ cá nhân (Profile & RBAC):** Đã bổ sung Menu Tài khoản (hiển thị Tên, Chức vụ và nút Đăng xuất) ở góc phải màn hình. Tính năng Đăng xuất hoạt động mượt mà. Hệ thống sẽ tự động quét quyền của user (Admin, PKT, PXCE) từ cơ sở dữ liệu để áp dụng khóa giao diện.
+- **Khóa an toàn thông minh (Auto-Lock):** Các tính năng/bảng số liệu chưa được nâng cấp dữ liệu sẽ tự động chuyển thành hình **Ổ khóa màu xám** (Chờ nâng cấp). Các tính năng bị khóa do *không đủ quyền hạn* (RBAC) sẽ tự động hiện **Ổ khóa màu vàng** để phân biệt rõ ràng.
 - **Lọc dữ liệu chính xác tuyệt đối:** Khi tìm kiếm mã khuôn cụ thể, hệ thống giờ đây trả về kết quả chính xác 100%, khắc phục tình trạng truy vấn dư thừa.
 
 ---

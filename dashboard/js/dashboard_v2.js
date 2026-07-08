@@ -33,21 +33,15 @@ async function init() {
       btn.style.opacity = '1';
 
       if (ok) {
-        loginOverlay.style.display = 'none';
+        // Reload to apply RBAC smoothly
+        window.location.reload();
       } else {
         errDiv.style.display = 'block';
       }
     });
   }
 
-  // Kiểm tra nếu đã có token thì vào luôn
-  if (API_REF.token) {
-    loginOverlay.style.display = 'none';
-  } else {
-    loginOverlay.style.display = 'flex';
-  }
-
-  // Gắn sự kiện và đổi icon cho các nút chưa có tính năng
+  // Khóa tính năng chờ cập nhật (ổ khóa xám)
   document.querySelectorAll('.sw-btn').forEach(btn => {
     if (!btn.getAttribute('onclick')) {
       const dot = btn.querySelector('.sw-dot');
@@ -56,10 +50,76 @@ async function init() {
         dot.style.background = 'transparent';
         dot.style.boxShadow = 'none';
       }
-      
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
         alert('Tính năng đang bị khóa chờ nâng cấp dữ liệu.');
       });
+    }
+  });
+
+  // Kiểm tra nếu đã có token thì vào luôn và áp dụng quyền
+  if (API_REF.token) {
+    loginOverlay.style.display = 'none';
+    applyRBAC();
+  } else {
+    loginOverlay.style.display = 'flex';
+  }
+}
+
+function applyRBAC() {
+  const role = localStorage.getItem('directus_role') || 'Unknown';
+  const fullName = localStorage.getItem('directus_fullname') || localStorage.getItem('directus_user');
+  
+  const menu = document.getElementById('user-profile-menu');
+  if (menu) {
+    menu.style.display = 'flex';
+    document.getElementById('current-user-name').textContent = fullName;
+    document.getElementById('current-user-role').textContent = role;
+  }
+  
+  if (role === 'Administrator' || role === 'Admin') return; // All unlocked
+  
+  const lockBtn = (btn) => {
+    btn.removeAttribute('onclick');
+    btn.style.opacity = '0.6';
+    btn.style.cursor = 'not-allowed';
+    
+    const icon = btn.querySelector('i.fa-lock');
+    const dot = btn.querySelector('.sw-dot');
+    
+    // Chuyển sang ổ khóa màu vàng báo hiệu thiếu quyền
+    if (dot) {
+      dot.innerHTML = '<i class="fas fa-lock" style="color: #f39c12; font-size: 10px; display: flex; align-items: center; justify-content: center; height: 100%;"></i>';
+      dot.style.background = 'transparent';
+      dot.style.boxShadow = 'none';
+    } else if (icon) {
+       icon.style.color = '#f39c12';
+    }
+    
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      alert('Bạn không có quyền truy cập vào chức năng này!');
+    });
+  };
+
+  const allBtns = document.querySelectorAll('.sw-btn');
+  allBtns.forEach(btn => {
+    const action = btn.getAttribute('onclick') || '';
+    if (!action) return; // đã khóa xám
+
+    if (role === 'PKT' || role === 'Phòng Kỹ Thuật') {
+      if (!action.includes('don_hang') && !action.includes('nhan_khuon') && !action.includes('tong_khuon') && !action.includes('khuon_nt_kt')) {
+        lockBtn(btn);
+      }
+    } else if (role === 'PXCE' || role === 'Phân Xưởng') {
+      if (action.includes('don_hang') || action.includes('nhan_khuon') || action.includes('khuon_nt_kt')) {
+        lockBtn(btn);
+      }
+    } else {
+      // Các phòng khác
+      if (action.includes('nhatky') || action.includes('nhan_khuon') || action.includes('don_hang') || action.includes('khuon_hong') || action.includes('thanh_ly') || action.includes('khuon_nt_kt')) {
+        lockBtn(btn);
+      }
     }
   });
 }

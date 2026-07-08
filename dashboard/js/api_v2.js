@@ -22,6 +22,22 @@ const API = {
       localStorage.setItem('directus_token', this.token);
       localStorage.setItem('directus_user', this.currentUser);
       
+      // Fetch user role
+      try {
+        const uRes = await fetch(`${DIRECTUS_URL}/users/me?fields=first_name,last_name,role.name`, {
+          headers: { 'Authorization': `Bearer ${this.token}` }
+        });
+        if (uRes.ok) {
+          const uData = await uRes.json();
+          let roleName = uData.data?.role?.name || 'User';
+          let fullName = [uData.data?.first_name, uData.data?.last_name].filter(Boolean).join(' ') || this.currentUser.split('@')[0];
+          localStorage.setItem('directus_role', roleName);
+          localStorage.setItem('directus_fullname', fullName);
+        }
+      } catch (e) {
+        console.warn('Could not fetch user role', e);
+      }
+      
       if (document.getElementById('status-dot')) document.getElementById('status-dot').style.background = '#22c55e';
       if (document.getElementById('update-time')) document.getElementById('update-time').textContent = 'Đã kết nối ' + new Date().toLocaleTimeString('vi-VN');
       return true;
@@ -37,8 +53,11 @@ const API = {
     this.currentUser = null;
     localStorage.removeItem('directus_token');
     localStorage.removeItem('directus_user');
-    if (document.getElementById('status-dot')) document.getElementById('status-dot').style.background = '#ef4444';
-    if (document.getElementById('update-time')) document.getElementById('update-time').textContent = 'Chưa đăng nhập';
+    localStorage.removeItem('directus_role');
+    localStorage.removeItem('directus_fullname');
+    
+    // Tự động tải lại trang để hiển thị màn hình đăng nhập
+    window.location.reload();
   },
 
   // Lấy dữ liệu từ bảng PostgreSQL qua backend Node (port 3001)

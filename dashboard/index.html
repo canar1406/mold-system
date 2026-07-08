@@ -28,6 +28,14 @@
     <!-- F_Main: Switchboard -->
     <div class="page active" id="page-dashboard">
       <div class="switchboard-form" id="switchboard-view">
+        <div class="user-profile-menu" id="user-profile-menu" style="display: none;">
+          <div class="user-info">
+            <span id="current-user-name" class="user-name"></span>
+            <span id="current-user-role" class="role-badge"></span>
+          </div>
+          <button class="logout-btn" onclick="API_REF.logout()"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+        
         <div class="form-header">
           <img src="img/logo.png" alt="Shalumi Logo" style="height: 70px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,240,255,0.15);">
           <div class="company-title">CÔNG TY CỔ PHẦN TẬP ĐOÀN NHÔM SÔNG HỒNG <span>SHALUMI</span></div>
@@ -109,13 +117,13 @@
               <button class="sw-btn" onclick="aggregateMoldData(event)"><span class="sw-dot"></span> Cập nhật số liệu nhật ký</button>
               <button class="sw-btn" onclick="openGrid('tonghop_timkiem')"><span class="sw-dot orange-dot"></span> Bảng tổng hợp tìm kiếm</button>
               <button class="sw-btn" onclick="openGrid('khuon_nt_kt')"><span class="sw-dot"></span> Vào khuôn nghiệm thu</button>
-              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Cập nhật số liệu nghiệm thu</button>
+              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Cập nhật số liệu nghiệm thu</button>
               <button class="sw-btn" onclick="openGrid('nghiem_thu')"><span class="sw-dot"></span> Bảng số liệu khuôn nghiệm thu</button>
-              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Lưu khuôn nghiệm thu</button>
-              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Áp đợt khuôn nghiện thu</button>
-              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Bảng lưu khuôn nghiệm thu</button>
-              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Vào khuon hỏng đã sửa</button>
-              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Bỏ Khuôn Hỏng</button>
+              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Lưu khuôn nghiệm thu</button>
+              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Áp đợt khuôn nghiện thu</button>
+              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Bảng lưu khuôn nghiệm thu</button>
+              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Vào khuon hỏng đã sửa</button>
+              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Bỏ Khuôn Hỏng</button>
             </div>
           </fieldset>
 
@@ -141,19 +149,19 @@
           <fieldset class="sw-group">
             <legend class="sw-legend">THANH LÝ</legend>
             <div class="sw-content">
-              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Chuyển khuôn hỏng sang thanh lý</button>
-              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Lưu khuôn thanh lý</button>
-              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Xóa khuôn thanh ly</button>
+              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Chuyển khuôn hỏng sang thanh lý</button>
+              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Lưu khuôn thanh lý</button>
+              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Xóa khuôn thanh ly</button>
               <button class="sw-btn" onclick="openGrid('thanh_ly')"><span class="sw-dot"></span> Bảng thanh lý</button>
               <button class="sw-btn" onclick="openGrid('lich_su_thanh_ly')"><span class="sw-dot"></span> Bảng lưu khuôn thanh lý</button>
-              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Sản phảm theo Tháng</button>
-              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Sản phảm theo nam</button>
+              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Sản phảm theo Tháng</button>
+              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Sản phảm theo nam</button>
               <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px;opacity: 0.6;cursor: not-allowed;">
-                <button class="sw-btn" disabled style="cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Vào khuôn</button>
+                <button class="sw-btn" disabled style="cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Vào khuôn</button>
                 <input type="text" style="width: 70px;" disabled>
               </div>
               <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px;opacity: 0.6;cursor: not-allowed;">
-                <button class="sw-btn" disabled style="cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Tìm Khuôn</button>
+                <button class="sw-btn" disabled style="cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Tìm Khuôn</button>
                 <input type="text" style="width: 30px;" disabled>
                 <input type="text" style="width: 60px;color:red" value="1/1/2019" disabled>
               </div>
@@ -167,8 +175,8 @@
     </div>
   </main>
 
-  <script src="js/api_v2.js?v=36"></script>
-  <script src="js/dashboard_v2.js?v=36"></script>
-  <script src="js/access_grid.js?v=36"></script>
+  <script src="js/api_v2.js?v=40"></script>
+  <script src="js/dashboard_v2.js?v=40"></script>
+  <script src="js/access_grid.js?v=40"></script>
 </body>
 </html>
