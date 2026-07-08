@@ -85,7 +85,20 @@ app.get('/api/query/:table', async (req, res) => {
     // Ngăn chặn SQL injection cơ bản
     if (!/^[a-zA-Z0-9_]+$/.test(table)) throw new Error('Invalid table');
 
-    const countResult = await pool.query(`SELECT COUNT(*) as total FROM ${table}`);
+    let whereClause = '';
+    let queryParams = [limit];
+    const offset = parseInt(req.query.offset) || 0;
+    queryParams.push(offset);
+
+    const search = req.query.search;
+    if (search) {
+      // Vì ten_khuon là cột chung của tất cả các view/table (khuon, hong, thanh ly)
+      // Dùng CAST as TEXT để tránh lỗi data type
+      whereClause = `WHERE CAST(ten_khuon AS TEXT) ILIKE $3`;
+      queryParams.push(`%${search}%`);
+    }
+
+    const countResult = await pool.query(`SELECT COUNT(*) as total FROM ${table} ${whereClause}`, search ? [`%${search}%`] : []);
     const totalRows = parseInt(countResult.rows[0].total) || 0;
 
     let orderClause = '';
@@ -95,8 +108,7 @@ app.get('/api/query/:table', async (req, res) => {
       else orderClause = `ORDER BY ${sort} ASC NULLS LAST`;
     }
 
-    const offset = parseInt(req.query.offset) || 0;
-    const result = await pool.query(`SELECT * FROM ${table} ${orderClause} LIMIT $1 OFFSET $2`, [limit, offset]);
+    const result = await pool.query(`SELECT * FROM ${table} ${whereClause} ${orderClause} LIMIT $1 OFFSET $2`, queryParams);
     res.json({ list: result.rows, pageInfo: { totalRows: totalRows } });
   } catch (err) {
     console.error(err);

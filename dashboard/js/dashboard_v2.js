@@ -250,7 +250,12 @@ async function loadDanhMuc(page = 1) {
   
   try {
     const offset = (page - 1) * KHUON_PAGE_SIZE;
-    const res = await API.query('v_thong_ke_khuon', { limit: KHUON_PAGE_SIZE, offset: offset, sort: '-lan_chay' });
+    const res = await API.query('v_thong_ke_khuon', { 
+      limit: KHUON_PAGE_SIZE, 
+      offset: offset, 
+      sort: '-lan_chay',
+      search: window.currentKhuonSearch || ''
+    });
     if (!res || !res.list || res.list.length === 0) {
       tbody.innerHTML = '<tr><td colspan="9" class="loading">Chưa có dữ liệu</td></tr>';
       return;
@@ -321,18 +326,17 @@ async function loadDanhMuc(page = 1) {
       btnNext.onclick = () => loadDanhMuc(page + 1);
     }
 
-    // Bắt sự kiện tìm kiếm
+    // Bắt sự kiện tìm kiếm (Server-side)
     const searchInput = document.getElementById('search-khuon');
     if (searchInput && !searchInput.dataset.bound) {
       searchInput.dataset.bound = "true";
+      let searchTimeout;
       searchInput.addEventListener('input', (e) => {
-        const keyword = e.target.value.toLowerCase();
-        const filtered = window.currentKhuonList.filter(r => 
-          (r.ten_khuon || '').toLowerCase().includes(keyword) ||
-          (r.dot || '').toLowerCase().includes(keyword) ||
-          (r.loai || '').toLowerCase().includes(keyword)
-        );
-        renderKhuonTable(filtered);
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+          window.currentKhuonSearch = e.target.value.trim();
+          loadDanhMuc(1);
+        }, 400); // Đợi 400ms sau khi ngừng gõ
       });
     }
 
