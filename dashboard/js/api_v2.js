@@ -41,12 +41,13 @@ const API = {
   },
 
   // Lấy dữ liệu từ bảng PostgreSQL qua backend Node (port 3001)
-  async query(tableName, { limit = 100, offset = 0, filter = '', sort = '' } = {}) {
+  async query(tableName, { limit = 100, offset = 0, filter = '', sort = '', search = '' } = {}) {
     try {
       const url = new URL(`http://${window.location.hostname}:3001/api/query/${tableName}`);
       url.searchParams.set('limit', limit);
       url.searchParams.set('offset', offset);
       if (sort) url.searchParams.set('sort', sort);
+      if (search) url.searchParams.set('search', search);
 
       const r = await fetch(url);
       const d = await r.json();
