@@ -22,10 +22,11 @@ const API = {
       localStorage.setItem('directus_token', this.token);
       localStorage.setItem('directus_user', this.currentUser);
       
-      document.getElementById('status-dot').style.background = '#22c55e';
-      document.getElementById('update-time').textContent = 'Đã kết nối ' + new Date().toLocaleTimeString('vi-VN');
+      if (document.getElementById('status-dot')) document.getElementById('status-dot').style.background = '#22c55e';
+      if (document.getElementById('update-time')) document.getElementById('update-time').textContent = 'Đã kết nối ' + new Date().toLocaleTimeString('vi-VN');
       return true;
-    } catch {
+    } catch (err) {
+      console.error("Login Error:", err);
       this.logout();
       return false;
     }
@@ -36,8 +37,8 @@ const API = {
     this.currentUser = null;
     localStorage.removeItem('directus_token');
     localStorage.removeItem('directus_user');
-    document.getElementById('status-dot').style.background = '#ef4444';
-    document.getElementById('update-time').textContent = 'Chưa đăng nhập';
+    if (document.getElementById('status-dot')) document.getElementById('status-dot').style.background = '#ef4444';
+    if (document.getElementById('update-time')) document.getElementById('update-time').textContent = 'Chưa đăng nhập';
   },
 
   // Lấy dữ liệu từ bảng PostgreSQL qua backend Node (port 3001)
@@ -48,6 +49,9 @@ const API = {
       url.searchParams.set('offset', offset);
       if (sort) url.searchParams.set('sort', sort);
       if (search) url.searchParams.set('search', search);
+      if (filter && Object.keys(filter).length > 0) {
+        url.searchParams.set('filters', JSON.stringify(filter));
+      }
 
       const r = await fetch(url);
       const d = await r.json();

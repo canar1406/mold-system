@@ -55,6 +55,8 @@ services:
     restart: unless-stopped
     depends_on:
       - postgres
+    volumes:
+      - ./dashboard/server.js:/app/server.js:ro
     ports:
       - "3001:3001"
 

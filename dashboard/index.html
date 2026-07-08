@@ -3,247 +3,172 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KM21.00 — Hệ Thống Quản Lý Khuôn</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <title>Hệ Thống Quản Lý Khuôn - MS Access Clone</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=38">
 </head>
 <body>
   <!-- Màn hình Đăng nhập (Login Overlay) -->
-  <div id="login-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 17, 23, 0.85); backdrop-filter: blur(5px); z-index: 9999; display: flex; align-items: center; justify-content: center;">
-    <div style="background: var(--bg2); padding: 40px; border-radius: 12px; width: 380px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); text-align: center; border: 1px solid var(--border);">
-      <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 25px;">
-        <div style="width: 40px; height: 40px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-          <i class="fa-solid fa-cube" style="color: white; font-size: 20px;"></i>
-        </div>
-        <h2 style="color: #fff; margin: 0; font-size: 24px;">Đăng Nhập</h2>
-      </div>
-      <form id="login-form" style="display: flex; flex-direction: column; gap: 15px;">
-        <input type="email" id="login-email" placeholder="Email" required style="padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg3); color: #fff; font-size: 14px; outline: none;">
-        <input type="password" id="login-password" placeholder="Mật khẩu" required style="padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg3); color: #fff; font-size: 14px; outline: none;">
-        <div id="login-error" style="color: #ef4444; font-size: 13px; display: none; text-align: left;">Sai tài khoản hoặc mật khẩu</div>
-        <button type="submit" id="btn-login-submit" style="padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 14px; transition: opacity 0.2s;">Đăng Nhập</button>
+  <div id="login-overlay" class="login-overlay">
+    <div class="login-box">
+      <h2>Đăng Nhập</h2>
+      <form id="login-form">
+        <input type="email" id="login-email" placeholder="Email" required>
+        <input type="password" id="login-password" placeholder="Mật khẩu" required>
+        <div id="login-error" class="error-text" style="display:none;">Sai tài khoản hoặc mật khẩu</div>
+        <button type="submit" id="btn-login-submit">Đăng Nhập</button>
       </form>
     </div>
   </div>
 
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-icon"><i class="fa-solid fa-cube"></i></div>
-      <div>
-        <div class="logo-title">KM21.00</div>
-        <div class="logo-sub">Quản Lý Khuôn Đúc</div>
-      </div>
-    </div>
-    <nav class="sidebar-nav">
-      <a href="#" class="nav-item active" data-page="dashboard">
-        <i class="fa-solid fa-chart-pie"></i> Tổng Quan
-      </a>
-      <a href="#" class="nav-item" data-page="khuon">
-        <i class="fa-solid fa-list"></i> Danh Mục Khuôn
-      </a>
-      <a href="#" class="nav-item" data-page="nhatky">
-        <i class="fa-solid fa-calendar-days"></i> Nhật Ký Vận Hành
-      </a>
-      <a href="#" class="nav-item" data-page="hieu-qua">
-        <i class="fa-solid fa-chart-line"></i> Biểu Đồ Hiệu Quả
-      </a>
-      <a href="#" class="nav-item" data-page="khuon-hong">
-        <i class="fa-solid fa-triangle-exclamation"></i> Khuôn Hỏng
-      </a>
-      <a href="#" class="nav-item" data-page="thanh-ly">
-        <i class="fa-solid fa-box-archive"></i> Thanh Lý
-      </a>
-    </nav>
-    <div class="sidebar-footer">
-      <div id="user-info" style="color: var(--text-muted); font-size: 13px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
-        <i class="fa-solid fa-user-circle" style="font-size: 16px;"></i>
-        <span id="current-user-email">Chưa đăng nhập</span>
-      </div>
-      <button id="btn-logout" class="btn-nocodb" style="width: 100%; margin-bottom: 10px; background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 8px; border-radius: 6px; cursor: pointer;">
-        <i class="fa-solid fa-sign-out-alt"></i> Đăng Xuất
-      </button>
-      <a href="#" onclick="window.open('http://' + window.location.hostname + ':8080', '_blank'); return false;" class="btn-nocodb">
-        <i class="fa-solid fa-table-cells"></i> Mở Quản Lý (Directus)
-      </a>
-    </div>
-  </aside>
-
-  <!-- Main -->
-  <main class="main">
-    <!-- Header -->
-    <header class="topbar">
-      <div class="topbar-title" id="page-title">Tổng Quan</div>
-      <div class="topbar-right">
-        <span class="update-time" id="update-time">--</span>
-        <div class="status-dot" id="status-dot" title="Kết nối DB"></div>
-      </div>
-    </header>
-
-    <!-- Pages -->
+  <!-- Vùng chứa các form chức năng (Pages) -->
+  <main class="main-container">
+    
+    <!-- F_Main: Switchboard -->
     <div class="page active" id="page-dashboard">
-      <!-- KPI Cards -->
-      <div class="kpi-grid">
-        <div class="kpi-card kpi-blue">
-          <div class="kpi-icon"><i class="fa-solid fa-cubes"></i></div>
-          <div class="kpi-value" id="kpi-tong-khuon">--</div>
-          <div class="kpi-label">Tổng Khuôn</div>
+      <div class="switchboard-form" id="switchboard-view">
+        <div class="form-header">
+          <img src="img/logo.png" alt="Shalumi Logo" style="height: 70px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,240,255,0.15);">
+          <div class="company-title">CÔNG TY CỔ PHẦN TẬP ĐOÀN NHÔM SÔNG HỒNG <span>SHALUMI</span></div>
+          <h2 class="system-title">THEO DÕI KHUÔN PKT</h2>
         </div>
-        <div class="kpi-card kpi-green">
-          <div class="kpi-icon"><i class="fa-solid fa-circle-check"></i></div>
-          <div class="kpi-value" id="kpi-dang-chay">--</div>
-          <div class="kpi-label">Đang Hoạt Động</div>
-        </div>
-        <div class="kpi-card kpi-red">
-          <div class="kpi-icon"><i class="fa-solid fa-circle-xmark"></i></div>
-          <div class="kpi-value" id="kpi-khuon-hong">--</div>
-          <div class="kpi-label">Khuôn Hỏng</div>
-        </div>
-        <div class="kpi-card kpi-gray">
-          <div class="kpi-icon"><i class="fa-solid fa-box-archive"></i></div>
-          <div class="kpi-value" id="kpi-thanh-ly">--</div>
-          <div class="kpi-label">Đã Thanh Lý</div>
-        </div>
-        <div class="kpi-card kpi-purple">
-          <div class="kpi-icon"><i class="fa-solid fa-weight-hanging"></i></div>
-          <div class="kpi-value" id="kpi-tong-kg">--</div>
-          <div class="kpi-label">Tổng KG Sản Phẩm</div>
-        </div>
-        <div class="kpi-card kpi-orange">
-          <div class="kpi-icon"><i class="fa-solid fa-rotate"></i></div>
-          <div class="kpi-value" id="kpi-tong-lc">--</div>
-          <div class="kpi-label">Tổng Lần Chạy</div>
-        </div>
-      </div>
+        
+                <div class="switchboard-grid">
+          
+          <!-- Column 1 & 1B Container -->
+          <div class="sw-col-container">
+            <!-- Box 1 -->
+            <fieldset class="sw-group">
+              <legend class="sw-legend">NHẬP SỐ LIỆU - TH THEO PHỐI</legend>
+              <div class="sw-content">
+                <button class="sw-btn" onclick="openDualGrid('nhatky_khuon', 'khuon_hong')"><span class="sw-dot"></span> Vào số liệu</button>
+                <button class="sw-btn" onclick="openGrid('nhatky_khuon')"><span class="sw-dot"></span> Sử lý nhật ký khuôn <span class="sw-badge" style="color:#d97706;font-weight:bold;margin-left:5px">2026</span></button>
+                <button class="sw-btn" onclick="aggregateMoldData()"><span class="sw-dot"></span> Cập nhật tổng hợp số liệu - Phôi</button>
+                <button class="sw-btn" onclick="openGrid('tonghop_phoi')"><span class="sw-dot"></span> Bảng tổng hợp số liệu - Phôi</button>
+                
+                <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px">
+                  <label><i class="fas fa-lock" style="color:#94a3b8; margin-right:3px;"></i> Lọc Tổng khuôn</label>
+                  <input type="text" id="sw-filter-ten" style="width: 25px;" disabled>
+                  <input type="date" id="sw-filter-date1" style="width: 100px;" disabled>
+                  <input type="date" id="sw-filter-date2" style="width: 100px;" disabled>
+                  <input type="text" id="sw-filter-dh" style="width: 25px;" value="30X" disabled>
+                </div>
+                
+                <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px">
+                  <button class="sw-btn" style="flex:1" onclick="openGrid('nhan_khuon')"><span class="sw-dot"></span> Vào nhập khuôn</button>
+                  <input type="text" style="width: 70px;">
+                </div>
 
-      <!-- Charts Row -->
-      <div class="charts-row">
-        <div class="chart-card wide">
-          <div class="chart-header">
-            <span>📈 KG Sản Phẩm Theo Tháng</span>
-            <select id="chart-year-select" class="select-sm"></select>
+                <button class="sw-btn"><span class="sw-dot orange-dot"></span> Tìm sửa đợt Khuôn</button>
+                <button class="sw-btn"><span class="sw-dot"></span> Vào khuôn cần sửa</button>
+                
+                <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px">
+                  <label><i class="fas fa-lock" style="color:#94a3b8; margin-right:3px;"></i> Khối lượng CX</label>
+                  <input type="text" style="width: 20px;" disabled>
+                  <input type="text" style="width: 20px;" disabled>
+                  <input type="text" style="width: 20px;" disabled>
+                </div>
+                
+                <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px">
+                  <button class="sw-btn" style="flex:1"><span class="sw-dot"></span> Kiểm tra đặt Khuôn</button>
+                  <input type="text" style="width: 60px;" placeholder="5/14/2020">
+                  <input type="text" style="width: 15px;">
+                  <input type="text" style="width: 15px;">
+                </div>
+
+                <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px">
+                  <button class="sw-btn" style="flex:1" onclick="openGrid('don_hang')"><span class="sw-dot"></span> Đơn hàng</button>
+                  <input type="text" style="width: 60px;">
+                </div>
+
+                <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px">
+                  <button class="sw-btn" style="flex:1"><span class="sw-dot"></span> Vị trí</button>
+                  <input type="text" style="width: 60px;">
+                </div>
+
+              </div>
+            </fieldset>
+
+            <!-- Box 1B -->
+            <fieldset class="sw-group" style="margin-top:10px">
+              <legend class="sw-legend" style="color:#0000ff">NGHIỆM THU</legend>
+              <div class="sw-content">
+                <div class="sw-input-row">
+                  <button class="sw-btn"><span class="sw-dot"></span> Bảng kê NT đợt</button>
+                  <select style="width:80px"><option></option></select>
+                </div>
+              </div>
+            </fieldset>
           </div>
-          <canvas id="chart-kg-thang"></canvas>
-        </div>
-        <div class="chart-card">
-          <div class="chart-header"><span>🏭 Phân Bố Theo Máy</span></div>
-          <canvas id="chart-may"></canvas>
-        </div>
-      </div>
 
-      <!-- Recent activity -->
-      <div class="chart-card">
-        <div class="chart-header"><span>📝 Nhật Ký Gần Đây</span></div>
-        <table class="data-table" id="table-recent">
-          <thead><tr>
-            <th>Ngày</th><th>Tên Khuôn</th><th>Loại</th>
-            <th>Máy</th><th>Hiệu Quả</th><th>KG SP</th>
-          </tr></thead>
-          <tbody id="tbody-recent"><tr><td colspan="6" class="loading">Đang tải...</td></tr></tbody>
-        </table>
-      </div>
-    </div>
+          <!-- Box 2 -->
+          <fieldset class="sw-group">
+            <legend class="sw-legend">THEO KG SẢN PHẨM</legend>
+            <div class="sw-content">
+              <button class="sw-btn" onclick="aggregateMoldData(event)"><span class="sw-dot"></span> Cập nhật số liệu nhật ký</button>
+              <button class="sw-btn" onclick="openGrid('tonghop_timkiem')"><span class="sw-dot orange-dot"></span> Bảng tổng hợp tìm kiếm</button>
+              <button class="sw-btn" onclick="openGrid('khuon_nt_kt')"><span class="sw-dot"></span> Vào khuôn nghiệm thu</button>
+              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Cập nhật số liệu nghiệm thu</button>
+              <button class="sw-btn" onclick="openGrid('nghiem_thu')"><span class="sw-dot"></span> Bảng số liệu khuôn nghiệm thu</button>
+              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Lưu khuôn nghiệm thu</button>
+              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Áp đợt khuôn nghiện thu</button>
+              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Bảng lưu khuôn nghiệm thu</button>
+              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Vào khuon hỏng đã sửa</button>
+              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Bỏ Khuôn Hỏng</button>
+            </div>
+          </fieldset>
 
-    <!-- Placeholder pages -->
-    <div class="page" id="page-khuon">
-      <div class="chart-card">
-        <div class="chart-header">
-          <span>📋 Danh Mục Khuôn</span>
-          <input type="text" id="search-khuon" class="search-input" placeholder="🔍 Tìm theo tên khuôn...">
-        </div>
-        <table class="data-table" id="table-khuon">
-          <thead><tr>
-            <th>Tên Khuôn</th><th>Đợt</th><th>Loại</th><th>Vị Trí</th>
-            <th>Ngày Nhập</th><th>Lần Chạy</th><th>KG Tổng</th>
-            <th>Tình Trạng</th><th>Trạng Thái</th>
-          </tr></thead>
-          <tbody id="tbody-khuon"><tr><td colspan="9" class="loading">Đang tải...</td></tr></tbody>
-        </table>
-        <div class="pagination-controls" id="pagination-khuon" style="display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: 15px; font-size: 13px;">
-          <span id="page-info-khuon" style="color: var(--text-muted); margin-right: 10px;">Đang hiển thị 1-100 / --</span>
-          <button class="btn-sm" id="btn-prev-khuon" style="padding: 5px 12px; background: var(--bg-lighter); border: 1px solid var(--border); color: #fff; border-radius: 6px; cursor: pointer;">Trang trước</button>
-          <div id="page-numbers-khuon" style="display: flex; gap: 4px;"></div>
-          <button class="btn-sm" id="btn-next-khuon" style="padding: 5px 12px; background: var(--bg-lighter); border: 1px solid var(--border); color: #fff; border-radius: 6px; cursor: pointer;">Trang tiếp</button>
-        </div>
-      </div>
-    </div>
+          <!-- Box 3 -->
+          <fieldset class="sw-group">
+            <legend class="sw-legend">BẢNG SỐ LIỆU</legend>
+            <div class="sw-content">
+              <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px">
+                <button class="sw-btn" style="flex:1" onclick="openGrid('nhan_khuon')"><span class="sw-dot"></span> Bảng nhận khuôn</button>
+                <input type="text" style="width: 70px;color:red;text-align:center" value="*">
+              </div>
+              <button class="sw-btn" onclick="openGrid('tong_khuon')"><span class="sw-dot"></span> Bảng tổng khuôn</button>
+              <button class="sw-btn" onclick="openGrid('nhatky_khuon')"><span class="sw-dot"></span> Bảng nhật ký</button>
+              <button class="sw-btn" onclick="openGrid('khuon_hong')"><span class="sw-dot"></span> Bảng khuôn hỏng</button>
+              <button class="sw-btn" onclick="openGrid('thanh_ly')"><span class="sw-dot"></span> Bảng thanh lý</button>
+              <button class="sw-btn" onclick="openGrid('lich_su_thanh_ly')"><span class="sw-dot"></span> Bảng lưu khuôn thanh lý</button>
+              <button class="sw-btn" onclick="openGrid('khuon_nt_kt')"><span class="sw-dot"></span> Khuôn kiểm tra để nghiệm thu</button>
+              <button class="sw-btn" onclick="openGrid('luu_nghiem_thu')"><span class="sw-dot"></span> Bảng lưu khuôn nghiệm thu</button>
+            </div>
+          </fieldset>
 
-    <div class="page" id="page-nhatky">
-      <div class="chart-card">
-        <div class="chart-header">
-          <span>📝 Nhật Ký Vận Hành</span>
-          <div class="filter-row">
-            <input type="date" id="filter-ngay-tu" class="select-sm">
-            <span>đến</span>
-            <input type="date" id="filter-ngay-den" class="select-sm">
-            <button onclick="loadNhatky()" class="btn-load">Lọc</button>
-          </div>
+          <!-- Box 4 -->
+          <fieldset class="sw-group">
+            <legend class="sw-legend">THANH LÝ</legend>
+            <div class="sw-content">
+              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Chuyển khuôn hỏng sang thanh lý</button>
+              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Lưu khuôn thanh lý</button>
+              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Xóa khuôn thanh ly</button>
+              <button class="sw-btn" onclick="openGrid('thanh_ly')"><span class="sw-dot"></span> Bảng thanh lý</button>
+              <button class="sw-btn" onclick="openGrid('lich_su_thanh_ly')"><span class="sw-dot"></span> Bảng lưu khuôn thanh lý</button>
+              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Sản phảm theo Tháng</button>
+              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Sản phảm theo nam</button>
+              <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px;opacity: 0.6;cursor: not-allowed;">
+                <button class="sw-btn" disabled style="cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Vào khuôn</button>
+                <input type="text" style="width: 70px;" disabled>
+              </div>
+              <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px;opacity: 0.6;cursor: not-allowed;">
+                <button class="sw-btn" disabled style="cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #f39c12;"></i> Tìm Khuôn</button>
+                <input type="text" style="width: 30px;" disabled>
+                <input type="text" style="width: 60px;color:red" value="1/1/2019" disabled>
+              </div>
+            </div>
+          </fieldset>
+          
         </div>
-        <table class="data-table">
-          <thead><tr>
-            <th>Ngày</th><th>Tên Khuôn</th><th>Máy</th>
-            <th>HQ</th><th>Số Thành</th><th>KG/lần</th><th>KG Thực</th>
-          </tr></thead>
-          <tbody id="tbody-nhatky"><tr><td colspan="7" class="loading">Chọn ngày rồi nhấn Lọc</td></tr></tbody>
-        </table>
-      </div>
-    </div>
 
-    <div class="page" id="page-hieu-qua">
-      <div class="charts-row">
-        <div class="chart-card wide">
-          <div class="chart-header"><span>📈 Hiệu Quả Theo Tháng</span>
-            <select id="hq-year" class="select-sm"></select>
-          </div>
-          <canvas id="chart-hq-thang"></canvas>
-        </div>
-        <div class="chart-card">
-          <div class="chart-header"><span>📊 Top 10 Khuôn Hiệu Quả</span></div>
-          <canvas id="chart-top-khuon"></canvas>
-        </div>
+
       </div>
     </div>
-
-    <div class="page" id="page-khuon-hong">
-      <div class="chart-card">
-        <div class="chart-header"><span>⚠️ Danh Sách Khuôn Hỏng</span></div>
-        <table class="data-table">
-          <thead><tr><th>Ngày</th><th>Tên Khuôn</th><th>Đợt</th><th>Ghi Chú</th><th>TLY</th></tr></thead>
-          <tbody id="tbody-khuon-hong"><tr><td colspan="4" class="loading">Đang tải...</td></tr></tbody>
-        </table>
-        <div class="pagination-controls" id="pagination-khuon-hong" style="display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: 15px; font-size: 13px;">
-          <span id="page-info-khuon-hong" style="color: var(--text-muted); margin-right: 10px;">Đang hiển thị 1-100 / --</span>
-          <button class="btn-sm" id="btn-prev-khuon-hong" style="padding: 5px 12px; background: var(--bg-lighter); border: 1px solid var(--border); color: #fff; border-radius: 6px; cursor: pointer;">Trang trước</button>
-          <div id="page-numbers-khuon-hong" style="display: flex; gap: 4px;"></div>
-          <button class="btn-sm" id="btn-next-khuon-hong" style="padding: 5px 12px; background: var(--bg-lighter); border: 1px solid var(--border); color: #fff; border-radius: 6px; cursor: pointer;">Trang tiếp</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="page" id="page-thanh-ly">
-      <div class="chart-card">
-        <div class="chart-header"><span>🗑️ Khuôn Đã Thanh Lý</span></div>
-        <table class="data-table">
-          <thead><tr><th>Ngày</th><th>Tên Khuôn</th><th>Đợt</th><th>Người Sửa</th><th>TL</th><th>Ghi Chú</th></tr></thead>
-          <tbody id="tbody-thanh-ly"><tr><td colspan="5" class="loading">Đang tải...</td></tr></tbody>
-        </table>
-        <div class="pagination-controls" id="pagination-thanh-ly" style="display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: 15px; font-size: 13px;">
-          <span id="page-info-thanh-ly" style="color: var(--text-muted); margin-right: 10px;">Đang hiển thị 1-100 / --</span>
-          <button class="btn-sm" id="btn-prev-thanh-ly" style="padding: 5px 12px; background: var(--bg-lighter); border: 1px solid var(--border); color: #fff; border-radius: 6px; cursor: pointer;">Trang trước</button>
-          <div id="page-numbers-thanh-ly" style="display: flex; gap: 4px;"></div>
-          <button class="btn-sm" id="btn-next-thanh-ly" style="padding: 5px 12px; background: var(--bg-lighter); border: 1px solid var(--border); color: #fff; border-radius: 6px; cursor: pointer;">Trang tiếp</button>
-        </div>
-      </div>
-    </div>
-
   </main>
 
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="js/api_v2.js?v=5"></script>
-  <script src="js/dashboard_v2.js?v=5"></script>
+  <script src="js/api_v2.js?v=36"></script>
+  <script src="js/dashboard_v2.js?v=36"></script>
+  <script src="js/access_grid.js?v=36"></script>
 </body>
 </html>
