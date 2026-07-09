@@ -22,8 +22,8 @@ Hệ thống được xây dựng bằng các công nghệ mã nguồn mở (Ope
    - Bộ não chính của hệ thống. Directus cung cấp giao diện quản lý dữ liệu chuyên nghiệp, trực quan hệt như Excel nhưng mạnh mẽ hơn nhiều. Nó cũng đảm nhiệm vai trò **Phân Quyền Bảo Mật (RBAC)** cực kỳ khắt khe.
 3. **Máy Chủ Thống Kê (Node.js + Express):**
    - Một "vệ tinh" nhỏ được viết riêng để chuyên tính toán các dữ liệu thống kê nặng (như tính thời gian khuôn chạy, tổng số lượng kg sản phẩm, v.v.) rồi trả về cho bảng điều khiển với tốc độ tính bằng mili-giây.
-4. **Bảng Điều Khiển (HTML, CSS, JavaScript, Chart.js):**
-   - Trang Dashboard được code thuần (không dùng thư viện cồng kềnh), giúp giao diện siêu nhẹ, siêu mượt. Tích hợp thư viện Chart.js để vẽ biểu đồ tuyệt đẹp.
+4. **Bảng Điều Khiển (HTML, CSS, JavaScript):**
+   - Trang Dashboard được code thuần (không dùng thư viện cồng kềnh), giúp giao diện siêu nhẹ, siêu mượt. Giao diện mô phỏng màn hình Switchboard và bảng dữ liệu (Data Grid) của MS Access.
 5. **Đóng Gói (Docker & Docker Compose):**
    - Toàn bộ 4 thành phần trên được "đóng gói" kín vào một khối (Docker). Nhờ vậy, máy tính của bạn không cần cài đặt lắt nhắt từng phần mềm, chỉ việc chạy 1 cú click chuột là toàn bộ hệ thống tự động bung ra hoàn chỉnh.
 

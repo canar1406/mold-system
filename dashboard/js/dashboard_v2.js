@@ -108,16 +108,24 @@ function applyRBAC() {
     if (!action) return; // đã khóa xám
 
     if (role === 'PKT' || role === 'Phòng Kỹ Thuật') {
-      if (!action.includes('don_hang') && !action.includes('nhan_khuon') && !action.includes('tong_khuon') && !action.includes('khuon_nt_kt')) {
+      // PKT: đơn hàng, nhận khuôn, tổng khuôn, kiểm tra + nghiệm thu, đặt khuôn
+      if (!action.includes('don_hang') && !action.includes('nhan_khuon') && !action.includes('tong_khuon')
+          && !action.includes('khuon_nt_kt') && !action.includes('nghiemThu') && !action.includes('nghiem_thu')
+          && !action.includes('dat_khuon')) {
         lockBtn(btn);
       }
     } else if (role === 'PXCE' || role === 'Phân Xưởng') {
-      if (action.includes('don_hang') || action.includes('nhan_khuon') || action.includes('khuon_nt_kt')) {
+      // PXCE: khóa mảng của PKT (đơn hàng, nhận khuôn, nghiệm thu, đặt khuôn)
+      if (action.includes('don_hang') || action.includes('nhan_khuon') || action.includes('khuon_nt_kt')
+          || action.includes('nghiemThu') || action.includes('dat_khuon')) {
         lockBtn(btn);
       }
     } else {
-      // Các phòng khác
-      if (action.includes('nhatky') || action.includes('nhan_khuon') || action.includes('don_hang') || action.includes('khuon_hong') || action.includes('thanh_ly') || action.includes('khuon_nt_kt')) {
+      // Các phòng khác: chỉ xem, khóa mọi thao tác nhập/xử lý
+      if (action.includes('nhatky') || action.includes('nhan_khuon') || action.includes('don_hang')
+          || action.includes('khuon_hong') || action.includes('thanh_ly') || action.includes('khuon_nt_kt')
+          || action.includes('nghiemThu') || action.includes('Liquidation') || action.includes('aggregate')
+          || action.includes('dat_khuon')) {
         lockBtn(btn);
       }
     }

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hệ Thống Quản Lý Khuôn - MS Access Clone</title>
+  <link rel="icon" type="image/png" href="img/logo.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css?v=38">
@@ -52,7 +53,7 @@
               <div class="sw-content">
                 <button class="sw-btn" onclick="openDualGrid('nhatky_khuon', 'khuon_hong')"><span class="sw-dot"></span> Vào số liệu</button>
                 <button class="sw-btn" onclick="openGrid('nhatky_khuon')"><span class="sw-dot"></span> Sử lý nhật ký khuôn <span class="sw-badge" style="color:#d97706;font-weight:bold;margin-left:5px">2026</span></button>
-                <button class="sw-btn" onclick="aggregateMoldData()"><span class="sw-dot"></span> Cập nhật tổng hợp số liệu - Phôi</button>
+                <button class="sw-btn" onclick="aggregateMoldData(event)"><span class="sw-dot"></span> Cập nhật tổng hợp số liệu - Phôi</button>
                 <button class="sw-btn" onclick="openGrid('tonghop_phoi')"><span class="sw-dot"></span> Bảng tổng hợp số liệu - Phôi</button>
                 
                 <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px">
@@ -68,8 +69,8 @@
                   <input type="text" style="width: 70px;">
                 </div>
 
-                <button class="sw-btn"><span class="sw-dot orange-dot"></span> Tìm sửa đợt Khuôn</button>
-                <button class="sw-btn"><span class="sw-dot"></span> Vào khuôn cần sửa</button>
+                <button class="sw-btn" onclick="openGrid('tong_khuon')"><span class="sw-dot orange-dot"></span> Tìm sửa đợt Khuôn</button>
+                <button class="sw-btn" onclick="openGrid('khuon_hong')"><span class="sw-dot"></span> Vào khuôn cần sửa</button>
                 
                 <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px">
                   <label><i class="fas fa-lock" style="color:#94a3b8; margin-right:3px;"></i> Khối lượng CX</label>
@@ -79,7 +80,7 @@
                 </div>
                 
                 <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px">
-                  <button class="sw-btn" style="flex:1"><span class="sw-dot"></span> Kiểm tra đặt Khuôn</button>
+                  <button class="sw-btn" style="flex:1" onclick="openGrid('dat_khuon')"><span class="sw-dot"></span> Kiểm tra đặt Khuôn</button>
                   <input type="text" style="width: 60px;" placeholder="5/14/2020">
                   <input type="text" style="width: 15px;">
                   <input type="text" style="width: 15px;">
@@ -91,7 +92,7 @@
                 </div>
 
                 <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px">
-                  <button class="sw-btn" style="flex:1"><span class="sw-dot"></span> Vị trí</button>
+                  <button class="sw-btn" style="flex:1" onclick="openGrid('tong_khuon', {})"><span class="sw-dot"></span> Vị trí</button>
                   <input type="text" style="width: 60px;">
                 </div>
 
@@ -103,7 +104,7 @@
               <legend class="sw-legend" style="color:#0000ff">NGHIỆM THU</legend>
               <div class="sw-content">
                 <div class="sw-input-row">
-                  <button class="sw-btn"><span class="sw-dot"></span> Bảng kê NT đợt</button>
+                  <button class="sw-btn" onclick="openGrid('khuon_nt_kt')"><span class="sw-dot"></span> Bảng kê NT đợt</button>
                   <select style="width:80px"><option></option></select>
                 </div>
               </div>
@@ -117,13 +118,13 @@
               <button class="sw-btn" onclick="aggregateMoldData(event)"><span class="sw-dot"></span> Cập nhật số liệu nhật ký</button>
               <button class="sw-btn" onclick="openGrid('tonghop_timkiem')"><span class="sw-dot orange-dot"></span> Bảng tổng hợp tìm kiếm</button>
               <button class="sw-btn" onclick="openGrid('khuon_nt_kt')"><span class="sw-dot"></span> Vào khuôn nghiệm thu</button>
-              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Cập nhật số liệu nghiệm thu</button>
-              <button class="sw-btn" onclick="openGrid('nghiem_thu')"><span class="sw-dot"></span> Bảng số liệu khuôn nghiệm thu</button>
-              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Lưu khuôn nghiệm thu</button>
-              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Áp đợt khuôn nghiện thu</button>
-              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Bảng lưu khuôn nghiệm thu</button>
-              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Vào khuon hỏng đã sửa</button>
-              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Bỏ Khuôn Hỏng</button>
+              <button class="sw-btn" onclick="nghiemThuUpdate()"><span class="sw-dot"></span> Cập nhật số liệu nghiệm thu</button>
+              <button class="sw-btn" onclick="openGrid('tonghop_nghiem_thu')"><span class="sw-dot"></span> Bảng số liệu khuôn nghiệm thu</button>
+              <button class="sw-btn" onclick="nghiemThuSave()"><span class="sw-dot"></span> Lưu khuôn nghiệm thu</button>
+              <button class="sw-btn" onclick="nghiemThuApDot()"><span class="sw-dot"></span> Áp đợt khuôn nghiện thu</button>
+              <button class="sw-btn" onclick="openGrid('luu_nghiem_thu')"><span class="sw-dot"></span> Bảng lưu khuôn nghiệm thu</button>
+              <button class="sw-btn" onclick="openGrid('khuon_hong')"><span class="sw-dot"></span> Vào khuon hỏng đã sửa</button>
+              <button class="sw-btn" onclick="openGrid('khuon_hong', {})"><span class="sw-dot"></span> Bỏ Khuôn Hỏng</button>
             </div>
           </fieldset>
 
@@ -149,21 +150,21 @@
           <fieldset class="sw-group">
             <legend class="sw-legend">THANH LÝ</legend>
             <div class="sw-content">
-              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Chuyển khuôn hỏng sang thanh lý</button>
-              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Lưu khuôn thanh lý</button>
-              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Xóa khuôn thanh ly</button>
+              <button class="sw-btn" onclick="moveDamagedToLiquidation()"><span class="sw-dot"></span> Chuyển khuôn hỏng sang thanh lý</button>
+              <button class="sw-btn" onclick="archiveLiquidation()"><span class="sw-dot"></span> Lưu khuôn thanh lý</button>
+              <button class="sw-btn" onclick="softDeleteLiquidation()"><span class="sw-dot"></span> Xóa khuôn thanh ly</button>
               <button class="sw-btn" onclick="openGrid('thanh_ly')"><span class="sw-dot"></span> Bảng thanh lý</button>
               <button class="sw-btn" onclick="openGrid('lich_su_thanh_ly')"><span class="sw-dot"></span> Bảng lưu khuôn thanh lý</button>
-              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Sản phảm theo Tháng</button>
-              <button class="sw-btn" disabled style="opacity: 0.6; cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Sản phảm theo nam</button>
-              <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px;opacity: 0.6;cursor: not-allowed;">
-                <button class="sw-btn" disabled style="cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Vào khuôn</button>
-                <input type="text" style="width: 70px;" disabled>
+              <button class="sw-btn" onclick="openProductionReport('month')"><span class="sw-dot"></span> Sản phảm theo Tháng</button>
+              <button class="sw-btn" onclick="openProductionReport('year')"><span class="sw-dot"></span> Sản phảm theo nam</button>
+              <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px;">
+                <button class="sw-btn" onclick="timKhuon()"><span class="sw-dot"></span> Vào khuôn</button>
+                <input type="text" style="width: 70px;">
               </div>
-              <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px;opacity: 0.6;cursor: not-allowed;">
-                <button class="sw-btn" disabled style="cursor: not-allowed;"><i class="fas fa-lock" style="margin-right: 5px; color: #94a3b8;"></i> Tìm Khuôn</button>
-                <input type="text" style="width: 30px;" disabled>
-                <input type="text" style="width: 60px;color:red" value="1/1/2019" disabled>
+              <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px;">
+                <button class="sw-btn" onclick="timKhuon()"><span class="sw-dot"></span> Tìm Khuôn</button>
+                <input type="text" style="width: 30px;">
+                <input type="text" style="width: 60px;color:red" value="1/1/2019">
               </div>
             </div>
           </fieldset>
@@ -175,8 +176,8 @@
     </div>
   </main>
 
-  <script src="js/api_v2.js?v=40"></script>
-  <script src="js/dashboard_v2.js?v=40"></script>
-  <script src="js/access_grid.js?v=40"></script>
+  <script src="js/api_v2.js?v=41"></script>
+  <script src="js/dashboard_v2.js?v=41"></script>
+  <script src="js/access_grid.js?v=41"></script>
 </body>
 </html>

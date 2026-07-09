@@ -6,6 +6,23 @@ const API_BASE = 'http://' + window.location.hostname + ':3001/api/query';
 const TABLES = {
   don_hang: { title: "ĐƠN ĐẶT HÀNG", columns: [ { key: "so_don", label: "Số Đơn" }, { key: "ngay_don", label: "Ngày Đơn" }, { key: "ghi_chu_don", label: "Ghi Chú" }, { key: "trang_1", label: "Trang 1" }, { key: "trang_2", label: "Trang 2" } ] },
 
+  dat_khuon: {
+    title: "KIỂM TRA ĐẶT KHUÔN",
+    columns: [
+      { key: 'id', label: 'ID', type: 'number', width: '60px', readonly: true },
+      { key: 'ngay_dat', label: 'Ngày đặt', type: 'date', width: '110px' },
+      { key: 'ten_khuon', label: 'Tên khuôn', type: 'text', width: '150px' },
+      { key: 'kgmet', label: 'Kg/mét', type: 'number', width: '80px' },
+      { key: 'sosoi', label: 'Sợi', type: 'number', width: '60px' },
+      { key: 'kieu', label: 'Kiểu', type: 'text', width: '70px' },
+      { key: 'kich_thuoc', label: 'Kích thước', type: 'text', width: '90px' },
+      { key: 'phoi_icn', label: 'Phôi', type: 'text', width: '80px' },
+      { key: 'hang_khuon', label: 'Hãng khuôn', type: 'text', width: '100px' },
+      { key: 'don_hang_dat', label: 'Đơn hàng', type: 'text', width: '100px' },
+      { key: 'ghichu', label: 'Ghi chú', type: 'text', width: '200px' }
+    ]
+  },
+
 
   tonghop_phoi: {
     title: "TỔNG HỢP KHUÔN THEO PHÔI",
@@ -29,6 +46,7 @@ const TABLES = {
 
   tong_khuon: {
     title: "BẢNG TỔNG KHUÔN",
+    pk: 'ten_khuon', // Khóa chính thật trong DB (cột id có dòng NULL/trùng)
     columns: [
       { key: 'id', label: 'ID', type: 'number', width: '60px', readonly: true },
       { key: 'ngay', label: 'Ngày nhập', type: 'date', width: '100px' },
@@ -71,6 +89,7 @@ const TABLES = {
     title: "NHẬT KÝ KHUÔN THANH LÝ",
     columns: [
       { key: 'ngay', label: 'Ngày', type: 'date', width: '100px' },
+      { key: 'ten_khuon', label: 'Tên khuôn', type: 'text', width: '150px' },
       { key: 'hieuqua', label: 'Hieuqua', type: 'number', width: '80px' },
       { key: 'so_thanh', label: 'SoThanh', type: 'number', width: '80px' },
       { key: 'kgthanh', label: 'Kgthanh', type: 'number', width: '80px' },
@@ -81,6 +100,7 @@ const TABLES = {
   },
   nhan_khuon: {
     title: "BẢNG NHẬN KHUÔN",
+    pk: 'dot_khuon', // Bảng này không có cột id
     columns: [
       { key: 'dot_khuon', label: 'Đợt nhận', type: 'text', width: '150px' },
       { key: 'sx', label: 'Hãng', type: 'text', width: '100px' },
@@ -140,14 +160,12 @@ const TABLES = {
       { key: 'min_kg', label: 'Min', type: 'number', width: '60px' },
       { key: 'max_kg', label: 'Max', type: 'number', width: '60px' },
       { key: 'tinh_trang', label: 'Tình trạng', type: 'text', width: '150px' },
-      { key: 'vi_tri', label: 'Đế ở', type: 'text', width: '80px' },
       { key: 'ngay_nhap', label: 'Nhập ngày', type: 'date', width: '100px' },
       { key: 'ngay_thu', label: 'Ngày thử', type: 'date', width: '100px' },
       { key: 'ngay_cuoi', label: 'Ngày cuối', type: 'date', width: '100px' },
       { key: 'ngay_nt', label: 'NgàyNT', type: 'date', width: '100px' },
       { key: 'dat', label: 'Y-N', type: 'text', width: '60px' },
       { key: 'hong', label: 'Hỏng', type: 'text', width: '60px' },
-      { key: 'ngay_hong', label: 'Ngày hỏng', type: 'date', width: '100px' },
       { key: 'tl', label: 'TL', type: 'text', width: '60px' },
       { key: 'ghichu', label: 'Ghi chú', type: 'text', width: '150px' }
     ]
@@ -190,6 +208,33 @@ const TABLES = {
     subdatasheet: 'nhatky_khuon',
     subKey: 'ten_khuon'
   },
+  tonghop_nghiem_thu: {
+    title: "SỐ LIỆU KHUÔN NGHIỆM THU (BẢNG TÍNH TẠM)",
+    pk: 'ten_khuon',
+    columns: [
+      { key: 'ten_khuon', label: 'Tên khuôn', type: 'text', width: '130px', readonly: true },
+      { key: 'dot', label: 'Đợt', type: 'text', width: '80px' },
+      { key: 'lc', label: 'Lc', type: 'number', width: '55px' },
+      { key: 'hq', label: 'Hq/Phôi', type: 'number', width: '80px' },
+      { key: 'sth', label: 'S.thanh', type: 'number', width: '75px' },
+      { key: 'hq_kg', label: 'Kg', type: 'number', width: '90px' },
+      { key: 'min_kg', label: 'Min', type: 'number', width: '60px' },
+      { key: 'max_kg', label: 'Max', type: 'number', width: '60px' },
+      { key: 'tinh_trang', label: 'Tình trạng', type: 'text', width: '150px' },
+      { key: 'ngay_nhap', label: 'Nhập', type: 'date', width: '95px' },
+      { key: 'ngay_thu', label: 'Ngày thử', type: 'date', width: '95px' },
+      { key: 'ngay_cuoi', label: 'Ngày cuối', type: 'date', width: '95px' },
+      { key: 'hong', label: 'Hỏng', type: 'text', width: '55px' },
+      { key: 'ngay_hong', label: 'Ngày hỏng', type: 'date', width: '95px' },
+      { key: 'tl', label: 'TL', type: 'text', width: '50px' },
+      { key: 'ngay_nt', label: 'NT gần nhất', type: 'date', width: '95px' },
+      { key: 'dat', label: 'Đạt', type: 'text', width: '55px' },
+      { key: 'vi_tri', label: 'Vị trí', type: 'text', width: '100px' },
+      { key: 'ghichu', label: 'Ghi chú', type: 'text', width: '180px' }
+    ],
+    subdatasheet: 'nhatky_khuon',
+    subKey: 'ten_khuon'
+  },
   luu_nghiem_thu: {
     title: "BẢNG LƯU KHUÔN NGHIỆM THU",
     columns: [
@@ -220,6 +265,20 @@ const TABLES = {
 let currentGridTable = 'tong_khuon';
 let gridFilters = {};
 let gridPage = 1;
+let gridTotalPages = 1;
+
+// Khóa chính của bảng (mặc định 'id')
+function getPk(tableName) {
+  return (TABLES[tableName] && TABLES[tableName].pk) || 'id';
+}
+
+// Cắt phần giờ của chuỗi ISO timestamp (bất kể múi giờ) để hiển thị ngày
+function formatCellValue(val) {
+  if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(val)) {
+    return val.split('T')[0];
+  }
+  return val;
+}
 
 let gridSort = '';
 window.handleMainSort = function(colKey) {
@@ -233,7 +292,7 @@ window.handleMainSort = function(colKey) {
 };
 
 
-async function openGrid(tableName) {
+async function openGrid(tableName, presetFilters) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   let gridPageEl = document.getElementById('page-access-grid');
   if (!gridPageEl) {
@@ -259,14 +318,29 @@ async function openGrid(tableName) {
   }
   
   gridPageEl.classList.add('active');
-  
+
   currentGridTable = tableName;
-  gridFilters = {};
+  gridFilters = (presetFilters && typeof presetFilters === 'object') ? presetFilters : {};
   gridPage = 1;
-  
+
   renderGridContainer(gridPageEl);
+  // Đổ giá trị lọc sẵn vào ô lọc trên header để người dùng thấy
+  if (presetFilters) {
+    setTimeout(() => {
+      for (const [col, val] of Object.entries(presetFilters)) {
+        const input = document.querySelector(`.page.active .col-filter[data-col="${col}"]`);
+        if (input && typeof val === 'string') input.value = val;
+      }
+    }, 50);
+  }
   await loadGridData();
 }
+
+// Ô "Tìm Khuôn" / "Vào khuôn": hỏi tên khuôn rồi mở tổng khuôn đã lọc
+window.timKhuon = function() {
+  const ten = prompt('Nhập tên (hoặc một phần tên) khuôn cần tìm:');
+  if (ten && ten.trim()) openGrid('tong_khuon', { ten_khuon: ten.trim() });
+};
 
 async function searchTongKhuon() {
   // Lấy dữ liệu từ màn hình Switchboard
@@ -417,6 +491,7 @@ async function loadGridData() {
     (document.querySelector('.page.active #grid-record-count') || document.getElementById('grid-record-count')).innerText = `Record: ${data.pageInfo.totalRows}`;
     
     const totalPages = Math.ceil(data.pageInfo.totalRows / 100) || 1;
+    gridTotalPages = totalPages;
     const selectEl = (document.querySelector('.page.active #grid-page-select') || document.getElementById('grid-page-select'));
     if (selectEl) {
       let opts = '';
@@ -440,29 +515,29 @@ function renderGridRows(list, tbody) {
     return;
   }
   
+  const pk = getPk(currentGridTable);
   let html = '';
-  list.forEach(row => {
-    html += `<tr class="data-row" data-id="${row.id}">`;
-    
+  list.forEach((row, idx) => {
+    const rowKey = row[pk] != null ? String(row[pk]) : '';
+    html += `<tr class="data-row" data-id="${rowKey.replace(/"/g, '&quot;')}">`;
+
     if (tableConfig.subdatasheet) {
       let pKey = tableConfig.parentKey || tableConfig.subKey;
-      html += `<td class="expand-cell" onclick="toggleSubdatasheet(this, '${row.id}', '${row[pKey]}')"><span class="expand-btn" style="cursor:pointer;font-weight:bold;color:#38bdf8;">+</span></td>`;
+      // Dùng idx làm DOM id (giá trị khóa có thể chứa khoảng trắng/ký tự lạ)
+      html += `<td class="expand-cell" onclick="toggleSubdatasheet(this, '${idx}', '${String(row[pKey] || '').replace(/'/g, "\\'")}')"><span class="expand-btn" style="cursor:pointer;font-weight:bold;color:#38bdf8;">+</span></td>`;
     } else {
       html += `<td></td>`;
     }
-    
+
     tableConfig.columns.forEach(c => {
-      let val = row[c.key] || '';
-      if (typeof val === 'string' && val.includes('T00:00:00.000Z')) {
-        val = val.split('T')[0];
-      }
+      let val = formatCellValue(row[c.key] != null ? row[c.key] : '');
       html += `<td ondblclick="editCell(this, '${c.key}')" style="cursor: cell;">${val}</td>`;
     });
-    
-    html += `<td style="text-align:center; color: #ef4444; cursor: pointer;" onclick="deleteRow('${row.id}')">✖</td>`;
+
+    html += `<td style="text-align:center; color: #ef4444; cursor: pointer;" onclick="deleteRowFromTr(this)">✖</td>`;
     html += `</tr>`;
   });
-  
+
   tbody.innerHTML = html;
 }
 
@@ -529,13 +604,14 @@ async function toggleSubdatasheet(td, rowId, subKeyValue) {
       return;
     }
     
+    const subPk = getPk(tableConfig.subdatasheet);
     let subHtml = '';
     data.list.forEach(row => {
+      const subRowKey = String(row[subPk] != null ? row[subPk] : '').replace(/'/g, "\\'");
       subHtml += `<tr>`;
       TABLES[tableConfig.subdatasheet].columns.forEach(c => {
-        let val = row[c.key] || '';
-        if (typeof val === 'string' && val.includes('T00:00:00.000Z')) val = val.split('T')[0];
-        subHtml += `<td ondblclick="editCell(this, '${c.key}', '${tableConfig.subdatasheet}', '${row.id}')" style="cursor: cell;">${val}</td>`;
+        let val = formatCellValue(row[c.key] != null ? row[c.key] : '');
+        subHtml += `<td ondblclick="editCell(this, '${c.key}', '${tableConfig.subdatasheet}', '${subRowKey}')" style="cursor: cell;">${val}</td>`;
       });
       subHtml += `</tr>`;
     });
@@ -546,8 +622,9 @@ async function toggleSubdatasheet(td, rowId, subKeyValue) {
 }
 
 function changeGridPage(delta) {
-  if (gridPage + delta < 1) return;
-  gridPage += delta;
+  const next = gridPage + delta;
+  if (next < 1 || next > gridTotalPages) return;
+  gridPage = next;
   loadGridData();
 }
 
@@ -580,12 +657,16 @@ function editCell(td, colKey, overrideTable = null, overrideId = null) {
         const payload = {};
         payload[colKey] = newValue;
         
-        const res = await fetch(`${API_BASE}/${targetTable}/${rowId}`, {
+        const res = await fetch(`${API_BASE}/${targetTable}/${encodeURIComponent(rowId)}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
         if (!res.ok) throw new Error('API Error');
+        // Nếu vừa sửa chính cột khóa thì cập nhật lại data-id của dòng
+        if (!overrideId && colKey === getPk(targetTable)) {
+          td.parentElement.setAttribute('data-id', newValue);
+        }
         
         td.style.backgroundColor = 'rgba(34, 197, 94, 0.2)'; // Green flash
         setTimeout(() => td.style.backgroundColor = '', 1000);
@@ -606,10 +687,21 @@ function editCell(td, colKey, overrideTable = null, overrideId = null) {
   };
 }
 
+// Xóa dòng: lấy khóa từ data-id của <tr> (tránh lỗi khi giá trị khóa chứa ký tự đặc biệt)
+async function deleteRowFromTr(el) {
+  const tr = el.closest('tr');
+  const id = tr ? tr.getAttribute('data-id') : null;
+  if (id == null || id === '' || id === 'null' || id === 'undefined') {
+    alert('Không xác định được khóa của bản ghi này!');
+    return;
+  }
+  await deleteRow(id);
+}
+
 async function deleteRow(id) {
   if (!confirm('Bạn có chắc chắn muốn xóa bản ghi này?')) return;
   try {
-    const res = await fetch(`${API_BASE}/${currentGridTable}/${id}`, {
+    const res = await fetch(`${API_BASE}/${currentGridTable}/${encodeURIComponent(id)}`, {
       method: 'DELETE'
     });
     if (!res.ok) throw new Error('API Error');
@@ -621,13 +713,17 @@ async function deleteRow(id) {
 
 async function addNewRow() {
   const tableConfig = TABLES[currentGridTable];
-  const firstCol = tableConfig.columns[0].key;
-  const newValue = prompt(`Nhập ${tableConfig.columns[0].label} cho bản ghi mới:`);
+  const pk = getPk(currentGridTable);
+  // Ưu tiên hỏi cột khóa chính (nếu không phải id tự tăng), sau đó tới cột đầu tiên không readonly
+  const promptCol = (pk !== 'id' && tableConfig.columns.find(c => c.key === pk))
+    || tableConfig.columns.find(c => !c.readonly)
+    || tableConfig.columns[0];
+  const newValue = prompt(`Nhập ${promptCol.label} cho bản ghi mới:`);
   if (!newValue) return;
-  
+
   try {
     const payload = {};
-    payload[firstCol] = newValue;
+    payload[promptCol.key] = newValue;
     
     const res = await fetch(`${API_BASE}/${currentGridTable}`, {
       method: 'POST',
@@ -698,15 +794,18 @@ window.jumpToGridPage = function(pageStr) {
 };
 
 
-window.aggregateMoldData = async function() {
+window.aggregateMoldData = async function(evt) {
   if (!confirm('Bạn có chắc chắn muốn quét và cập nhật lại toàn bộ Sổ Nhật Ký vào Bảng Tổng Hợp? Quá trình này có thể mất vài giây.')) {
     return;
   }
-  
-  const btn = event.currentTarget;
-  const originalText = btn.innerHTML;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
-  btn.style.pointerEvents = 'none';
+
+  // Nhận event qua tham số (biến global `event` không tồn tại trên Firefox)
+  const btn = (evt && (evt.currentTarget || evt.target)) || null;
+  const originalText = btn ? btn.innerHTML : '';
+  if (btn) {
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+    btn.style.pointerEvents = 'none';
+  }
 
   try {
     const res = await fetch(`http://${window.location.hostname}:3001/api/aggregate-mold-data`, {
@@ -721,8 +820,10 @@ window.aggregateMoldData = async function() {
   } catch (err) {
     alert('Lỗi kết nối: ' + err.message);
   } finally {
-    btn.innerHTML = originalText;
-    btn.style.pointerEvents = 'auto';
+    if (btn) {
+      btn.innerHTML = originalText;
+      btn.style.pointerEvents = 'auto';
+    }
   }
 };
 
@@ -853,21 +954,22 @@ window.loadRightGridData = async function(table) {
     if (!data.list || data.list.length === 0) {
       html = `<tr><td colspan="100" style="text-align:center">Không có dữ liệu</td></tr>`;
     } else {
+      const pk = getPk(table);
       data.list.forEach(row => {
-        html += `<tr class="data-row" data-id="${row.id}">`;
-        html += `<td></td>`; 
+        const rowKey = String(row[pk] != null ? row[pk] : '').replace(/'/g, "\\'");
+        html += `<tr class="data-row" data-id="${rowKey.replace(/"/g, '&quot;')}">`;
+        html += `<td></td>`;
         tableConfig.columns.forEach(c => {
-          let val = row[c.key] || '';
-          if (typeof val === 'string' && val.includes('T00:00:00.000Z')) val = val.split('T')[0];
-          
+          let val = formatCellValue(row[c.key] != null ? row[c.key] : '');
+
           if (c.key === 'hong' || c.key === 'tly') {
             const checked = (val === 'x' || val === 'X' || val === true || val === 'true') ? 'checked' : '';
-            html += `<td style="text-align:center"><input type="checkbox" ${checked} onchange="updateRightCheckbox('${table}', '${row.id}', '${c.key}', this.checked)"></td>`;
+            html += `<td style="text-align:center"><input type="checkbox" ${checked} onchange="updateRightCheckbox('${table}', '${rowKey}', '${c.key}', this.checked)"></td>`;
           } else {
-            html += `<td ondblclick="editRightCell(this, '${table}', '${row.id}', '${c.key}')">${val}</td>`;
+            html += `<td ondblclick="editRightCell(this, '${table}', '${rowKey}', '${c.key}')">${val}</td>`;
           }
         });
-        html += `<td style="text-align:center; color: #ef4444; cursor: pointer;" onclick="deleteRightRow('${table}', '${row.id}')">✖</td>`;
+        html += `<td style="text-align:center; color: #ef4444; cursor: pointer;" onclick="deleteRightRow('${table}', '${rowKey}')">✖</td>`;
         html += `</tr>`;
       });
     }
@@ -880,7 +982,7 @@ window.loadRightGridData = async function(table) {
 window.updateRightCheckbox = async function(table, id, col, isChecked) {
   const val = isChecked ? 'x' : '';
   try {
-    await fetch(`${API_BASE}/${table}/${id}`, {
+    await fetch(`${API_BASE}/${table}/${encodeURIComponent(id)}`, {
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ [col]: val })
@@ -910,7 +1012,7 @@ window.addNewRightRow = async function(table) {
 window.deleteRightRow = async function(table, id) {
   if(!confirm('Xóa dòng này?')) return;
   try {
-    const res = await fetch(`${API_BASE}/${table}/${id}`, { method: 'DELETE' });
+    const res = await fetch(`${API_BASE}/${table}/${encodeURIComponent(id)}`, { method: 'DELETE' });
     if (res.ok) {
       loadRightGridData(table);
     }
@@ -940,7 +1042,7 @@ window.editRightCell = function(td, table, id, colKey) {
     if (newVal !== currentVal) {
       td.style.background = '#065f46';
       try {
-        await fetch(`${API_BASE}/${table}/${id}`, {
+        await fetch(`${API_BASE}/${table}/${encodeURIComponent(id)}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ [colKey]: newVal })
@@ -954,4 +1056,148 @@ window.editRightCell = function(td, table, id, colKey) {
   input.onkeydown = (e) => {
     if (e.key === 'Enter') input.blur();
   };
+};
+
+
+// =========================================================
+// LUỒNG THANH LÝ — gọi các endpoint nghiệp vụ trên Node API
+// =========================================================
+const ACTION_BASE = 'http://' + window.location.hostname + ':3001/api';
+
+async function callAction(path, confirmMsg) {
+  if (confirmMsg && !confirm(confirmMsg)) return;
+  try {
+    const res = await fetch(`${ACTION_BASE}/${path}`, { method: 'POST' });
+    const data = await res.json();
+    if (data.success) {
+      alert('✅ ' + (data.message || 'Hoàn thành'));
+    } else {
+      alert('❌ Lỗi: ' + (data.error || 'Không rõ'));
+    }
+  } catch (e) {
+    alert('❌ Lỗi kết nối: ' + e.message);
+  }
+}
+
+window.moveDamagedToLiquidation = function() {
+  callAction('liquidation/move-damaged',
+    'Chuyển tất cả khuôn hỏng đã đánh dấu thanh lý sang Bảng thanh lý?');
+};
+
+window.archiveLiquidation = function() {
+  callAction('liquidation/archive',
+    'Lưu trữ (sao lưu lịch sử) các khuôn trong Bảng thanh lý cùng nhật ký của chúng?');
+};
+
+window.softDeleteLiquidation = function() {
+  callAction('liquidation/soft-delete',
+    'Đánh dấu thanh lý (xóa mềm) trong Bảng tổng khuôn cho các khuôn đã thanh lý?\n\nLƯU Ý: chỉ đánh dấu, KHÔNG xóa hẳn — có thể khôi phục.');
+};
+
+
+// =========================================================
+// LUỒNG NGHIỆM THU
+// =========================================================
+
+// "Cập nhật số liệu nghiệm thu": tính lại bảng tạm rồi mở bảng xem
+window.nghiemThuUpdate = async function() {
+  if (!confirm('Tính lại số liệu nghiệm thu cho các khuôn trong danh sách kiểm tra?\n(Chỉ cập nhật bảng tính tạm, KHÔNG ảnh hưởng lịch sử nghiệm thu)')) return;
+  try {
+    const res = await fetch(`${ACTION_BASE}/nghiemthu/update`, { method: 'POST' });
+    const data = await res.json();
+    if (data.success) {
+      alert('✅ ' + data.message);
+      openGrid('tonghop_nghiem_thu');
+    } else {
+      alert('❌ Lỗi: ' + (data.error || 'Không rõ'));
+    }
+  } catch (e) { alert('❌ Lỗi kết nối: ' + e.message); }
+};
+
+// "Lưu khuôn nghiệm thu": hỏi ngày NT rồi APPEND vào lịch sử nghiem_thu
+window.nghiemThuSave = async function() {
+  const today = new Date().toISOString().split('T')[0];
+  const ngay = prompt('Vào ngày nghiệm thu (YYYY-MM-DD):', today);
+  if (!ngay) return;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(ngay.trim())) { alert('Sai định dạng ngày! Ví dụ: ' + today); return; }
+  try {
+    const res = await fetch(`${ACTION_BASE}/nghiemthu/save`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ngay_nt: ngay.trim() })
+    });
+    const data = await res.json();
+    alert(data.success ? '✅ ' + data.message : '❌ Lỗi: ' + (data.error || 'Không rõ'));
+  } catch (e) { alert('❌ Lỗi kết nối: ' + e.message); }
+};
+
+// "Áp đợt khuôn nghiệm thu": điền Đợt còn thiếu từ bảng tổng khuôn
+window.nghiemThuApDot = function() {
+  callAction('nghiemthu/ap-dot',
+    'Áp Đợt từ Bảng tổng khuôn cho các bản ghi nghiệm thu đang thiếu Đợt?');
+};
+
+
+// =========================================================
+// MÀN HÌNH BÁO CÁO SẢN PHẨM THEO THÁNG / NĂM (bảng + biểu đồ SVG)
+// =========================================================
+window.openProductionReport = async function(by) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  let el = document.getElementById('page-report');
+  if (!el) {
+    el = document.createElement('div');
+    el.className = 'page';
+    el.id = 'page-report';
+    document.querySelector('.main-container').appendChild(el);
+  }
+  el.classList.add('active');
+  const tenLoai = by === 'year' ? 'NĂM' : 'THÁNG';
+  el.innerHTML = `<div class="chart-card" style="padding:15px;height:100%;overflow:auto;">
+    <div style="display:flex;align-items:center;margin-bottom:10px;">
+      <span class="grid-title">📊 SẢN PHẨM THEO ${tenLoai}</span>
+      <button class="btn-sm btn-danger" style="margin-left:auto" onclick="openSwitchboard()">❌ Đóng</button>
+    </div>
+    <div id="report-body">Đang tải...</div>
+  </div>`;
+
+  try {
+    const res = await fetch(`${ACTION_BASE}/report/production?by=${by === 'year' ? 'year' : 'month'}`);
+    const data = await res.json();
+    const rows = data.rows || [];
+    if (!rows.length) { document.getElementById('report-body').innerHTML = 'Không có dữ liệu'; return; }
+
+    const label = r => by === 'year' ? `${r.nam}` : `${String(r.thang).padStart(2,'0')}/${r.nam}`;
+    const maxKg = Math.max(...rows.map(r => Number(r.tong_kg) || 0)) || 1;
+
+    // Biểu đồ cột SVG thuần (chạy offline, không cần thư viện)
+    const bw = 34, gap = 12, chartH = 240;
+    const svgW = rows.length * (bw + gap) + 40;
+    let bars = '';
+    rows.forEach((r, i) => {
+      const kg = Number(r.tong_kg) || 0;
+      const h = Math.round((kg / maxKg) * (chartH - 30));
+      const x = 30 + i * (bw + gap);
+      const y = chartH - h - 20;
+      bars += `<rect x="${x}" y="${y}" width="${bw}" height="${h}" fill="#38bdf8" rx="3">
+                 <title>${label(r)}: ${kg.toLocaleString('vi-VN')} kg</title></rect>
+               <text x="${x + bw/2}" y="${chartH - 6}" font-size="9" fill="#94a3b8" text-anchor="middle" transform="rotate(0)">${label(r)}</text>`;
+    });
+    const svg = `<div style="overflow-x:auto;border:1px solid #334155;border-radius:8px;padding:10px;margin-bottom:15px;background:#0f172a;">
+      <svg width="${svgW}" height="${chartH + 10}" style="min-width:100%">${bars}</svg></div>`;
+
+    let table = `<table class="access-table" style="width:100%"><thead><tr>
+      ${by === 'year' ? '<th>Năm</th>' : '<th>Tháng</th>'}
+      <th>Lượt chạy</th><th>Tổng số thanh</th><th>Tổng KG</th><th>Hiệu quả TB</th></tr></thead><tbody>`;
+    rows.forEach(r => {
+      table += `<tr><td style="text-align:center">${label(r)}</td>
+        <td style="text-align:right">${Number(r.luot_chay).toLocaleString('vi-VN')}</td>
+        <td style="text-align:right">${Number(r.tong_thanh).toLocaleString('vi-VN')}</td>
+        <td style="text-align:right">${Number(r.tong_kg).toLocaleString('vi-VN')}</td>
+        <td style="text-align:right">${r.hieu_qua_tb ?? ''}</td></tr>`;
+    });
+    table += '</tbody></table>';
+    document.getElementById('report-body').innerHTML = svg + table;
+  } catch (e) {
+    document.getElementById('report-body').innerHTML = 'Lỗi: ' + e.message;
+  }
 };

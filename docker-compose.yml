@@ -11,8 +11,10 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init-scripts:/docker-entrypoint-initdb.d:ro
-    ports:
-      - "5432:5432"
+    # Không publish port 5432 ra ngoài — Directus/API kết nối qua mạng nội bộ Docker.
+    # Nếu cần bảo trì DB từ máy host, tạm bỏ comment 2 dòng dưới rồi chạy lại docker compose up -d
+    # ports:
+    #   - "127.0.0.1:5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U mold_user -d molddb"]
       interval: 10s
@@ -34,8 +36,10 @@ services:
       DB_DATABASE: "molddb"
       DB_USER: "mold_user"
       DB_PASSWORD: "mold_pass_2024"
+      # Lưu ý: 2 biến dưới chỉ có tác dụng khi khởi tạo DB trống.
+      # DB được seed từ file dump nên tài khoản thật nằm trong dump: admin@khuon.com / AdminKM2100x
       ADMIN_EMAIL: "admin@khuon.com"
-      ADMIN_PASSWORD: "Admin@KM2100!"
+      ADMIN_PASSWORD: "AdminKM2100x"
       PUBLIC_URL: "http://localhost:8080"
       WEBSOCKETS_ENABLED: "true"
       FLOWS_EXEC_ALLOWED_MODULES: "array-flatten,body-parser,winston"
@@ -54,7 +58,8 @@ services:
     container_name: mold_api
     restart: unless-stopped
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     volumes:
       - ./dashboard/server.js:/app/server.js:ro
     ports:
