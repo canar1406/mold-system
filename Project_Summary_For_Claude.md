@@ -95,5 +95,12 @@ mold-system/
   - `POST /api/liquidation/archive` — lưu `thanh_ly`→`lich_su_thanh_ly` + nhật ký→`nhatky_khuon_thanh_ly` (transaction, idempotent).
   - `POST /api/liquidation/soft-delete` — XÓA MỀM: đánh dấu `tong_khuon.tly='x'` cho khuôn đã thanh lý (không xóa hẳn).
   - `GET /api/report/production?by=month|year` — báo cáo sản phẩm theo tháng/năm.
-- **Frontend mới (`access_grid.js`):** `openGrid(table, presetFilters)` mở bảng kèm lọc sẵn; `timKhuon()` tìm khuôn; `openProductionReport('month'|'year')` màn báo cáo có biểu đồ cột SVG thuần (offline); các hàm `moveDamagedToLiquidation/archiveLiquidation/softDeleteLiquidation`. Config bảng `dat_khuon` đã thêm.
-- **Còn khóa (chờ quyết định nghiệp vụ):** 3 nút nhóm nghiệm thu — "Cập nhật số liệu nghiệm thu", "Lưu khuôn nghiệm thu", "Áp đợt khuôn nghiệm thu" — vì chúng cần rebuild/ghi đè bảng `nghiem_thu` (3061 dòng lịch sử) theo luồng make-table `10T_*` của Access, chưa có quyết định về schema (views→tables).
+- **Endpoint nghiệm thu (`server.js`):**
+  - `POST /api/nghiemthu/update` — tính lại bảng tạm `tonghop_nghiem_thu` cho các khuôn trong `khuon_nt_kt` (port make-table `10T_TDTHKHUON_KG_KT`, áp quy tắc KG đổi nguồn 19/4/2020). KHÔNG đụng lịch sử `nghiem_thu`.
+  - `POST /api/nghiemthu/save` (body `{ngay_nt}`) — APPEND bảng tạm vào lịch sử `nghiem_thu`, chống trùng theo (ten_khuon + ngay_nt). Giữ nguyên 3061 dòng cũ (KHÔNG ghi đè — theo quyết định của khách).
+  - `POST /api/nghiemthu/ap-dot` — điền `dot` còn thiếu trong `nghiem_thu`/`khuon_nt_kt` từ `tong_khuon`.
+- **Frontend mới (`access_grid.js`):** `openGrid(table, presetFilters)` mở bảng kèm lọc sẵn; `timKhuon()` tìm khuôn; `openProductionReport('month'|'year')` màn báo cáo có biểu đồ cột SVG thuần (offline); các hàm `moveDamagedToLiquidation/archiveLiquidation/softDeleteLiquidation`, `nghiemThuUpdate/nghiemThuSave/nghiemThuApDot`. Config bảng `dat_khuon` + `tonghop_nghiem_thu` đã thêm.
+- **RBAC (`dashboard_v2.js`):** bổ sung khóa theo `nghiemThu/Liquidation/aggregate/dat_khuon` cho đúng vai trò.
+- **Trạng thái nút:** Tất cả nút + ô input tham số đã nối chức năng. Còn DUY NHẤT nhóm "Khối lượng CX" cố ý để khóa (không đọc được logic gốc — macro nhúng nhị phân, không có query tương ứng; khách chọn giữ khóa chờ mô tả sau).
+- **Ô lọc tham số (`access_grid.js`):** `swVal(id)` đọc ô nhập (bỏ qua giá trị `*`=tất cả); các hàm `searchTongKhuon` (tên+ngày+ĐH), `openNhanKhuon` (hãng=2 ký tự đầu đợt), `openDatKhuon`, `openDonHang`, `openViTri`, `openBangKeNT` + `loadDotOptions` (nạp dropdown đợt), `timKhuon`. Các id ô: `sw-filter-ten/date1/date2/dh`, `sw-nhankhuon-hang`, `sw-nhankhuon3-hang`, `sw-datkhuon-ten`, `sw-donhang-so`, `sw-vitri`, `sw-nt-dot`, `sw-vaokhuon`, `sw-timkhuon`.
+- Bảng `tonghop_nghiem_thu` là bảng tính tạm (TRUNCATE + nạp lại mỗi lần bấm "Cập nhật số liệu nghiệm thu").

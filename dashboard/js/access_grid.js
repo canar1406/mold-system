@@ -336,65 +336,79 @@ async function openGrid(tableName, presetFilters) {
   await loadGridData();
 }
 
-// Ô "Tìm Khuôn" / "Vào khuôn": hỏi tên khuôn rồi mở tổng khuôn đã lọc
-window.timKhuon = function() {
-  const ten = prompt('Nhập tên (hoặc một phần tên) khuôn cần tìm:');
-  if (ten && ten.trim()) openGrid('tong_khuon', { ten_khuon: ten.trim() });
+// Đọc giá trị ô nhập trên Switchboard.
+// Ưu tiên ô nằm trong trang đang hiển thị vì sidebar là bản clone (id bị trùng).
+function swVal(id) {
+  const active = document.querySelector('.page.active');
+  let el = active ? active.querySelector('#' + id) : null;
+  if (!el) el = document.getElementById(id);
+  const v = el ? String(el.value || '').trim() : '';
+  return (v === '*') ? '' : v; // '*' trong Access nghĩa là "tất cả"
+}
+
+// "Lọc Tổng khuôn": tên khuôn + khoảng ngày nhập + đơn hàng
+window.searchTongKhuon = function() {
+  const filters = {};
+  const tenK = swVal('sw-filter-ten');
+  const dh = swVal('sw-filter-dh');
+  const date1 = swVal('sw-filter-date1');
+  const date2 = swVal('sw-filter-date2');
+  if (tenK) filters.ten_khuon = tenK;
+  if (dh) filters.don_hang = dh;
+  if (date1 && date2) filters.ngay = { type: 'between', start: date1, end: date2 };
+  openGrid('tong_khuon', filters);
 };
 
-async function searchTongKhuon() {
-  // Lấy dữ liệu từ màn hình Switchboard
-  const tenK = document.getElementById('sw-filter-ten').value.trim();
-  const date1 = document.getElementById('sw-filter-date1').value;
-  const date2 = document.getElementById('sw-filter-date2').value;
-  const dh = document.getElementById('sw-filter-dh').value.trim();
-  
-  // Thiết lập biến lọc
-  gridFilters = {};
-  if (tenK) gridFilters.ten_khuon = tenK;
-  if (dh) gridFilters.don_hang = dh;
-  if (date1 && date2) {
-    gridFilters.ngay = { type: 'between', start: date1, end: date2 };
-  }
-  
-  // Mở grid và nạp
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  let gridPageEl = document.getElementById('page-access-grid');
-  if (!gridPageEl) {
-    gridPageEl = document.createElement('div');
-    gridPageEl.className = 'page';
-    gridPageEl.id = 'page-access-grid';
-    
-    gridPageEl.innerHTML = `
-      <div class="app-container">
-        <div id="grid-sidebar" class="grid-sidebar hidden"></div>
-        <div id="grid-main-content" class="grid-main-content"></div>
-      </div>
-    `;
-    document.querySelector('.main-container').appendChild(gridPageEl);
-    
-    // Copy the dashboard switchboard into the sidebar
-    const dashboardGrid = document.querySelector('#page-dashboard .switchboard-grid');
-    if (dashboardGrid) {
-      const sidebarContent = dashboardGrid.cloneNode(true);
-      // Disable ID duplicates if any, but since it's just classes mostly it's fine
-      document.getElementById('grid-sidebar').appendChild(sidebarContent);
-    }
-  }
-  gridPageEl.classList.add('active');
-  
-  currentGridTable = 'tong_khuon';
-  gridPage = 1;
-  renderGridContainer(gridPageEl);
-  
-  // Đổ dữ liệu ngược lại vào lưới filter
-  setTimeout(() => {
-    if (tenK) document.querySelector('.col-filter[data-col="ten_khuon"]').value = tenK;
-    if (dh) document.querySelector('.col-filter[data-col="don_hang"]').value = dh;
-  }, 100);
-  
-  await loadGridData();
-}
+// "Tìm Khuôn" / "Vào khuôn" (cột THANH LÝ): lấy tên từ ô, nếu trống thì hỏi
+window.timKhuon = function() {
+  let ten = swVal('sw-timkhuon') || swVal('sw-vaokhuon');
+  if (!ten) ten = (prompt('Nhập tên (hoặc một phần tên) khuôn cần tìm:') || '').trim();
+  if (ten) openGrid('tong_khuon', { ten_khuon: ten });
+};
+
+// "Bảng nhận khuôn" / "Vào nhập khuôn": lọc theo hãng (2 ký tự đầu của Đợt)
+window.openNhanKhuon = function(inputId) {
+  const hang = swVal(inputId || 'sw-nhankhuon-hang');
+  openGrid('nhan_khuon', hang ? { dot_khuon: hang } : {});
+};
+
+// "Kiểm tra đặt Khuôn": lọc theo tên khuôn
+window.openDatKhuon = function() {
+  const ten = swVal('sw-datkhuon-ten');
+  openGrid('dat_khuon', ten ? { ten_khuon: ten } : {});
+};
+
+// "Đơn hàng": lọc theo số đơn
+window.openDonHang = function() {
+  const so = swVal('sw-donhang-so');
+  openGrid('don_hang', so ? { so_don: so } : {});
+};
+
+// "Vị trí": lọc tổng khuôn theo vị trí giá để
+window.openViTri = function() {
+  const vt = swVal('sw-vitri');
+  openGrid('tong_khuon', vt ? { vi_tri: vt } : {});
+};
+
+// "Bảng kê NT đợt": lọc khuôn kiểm tra nghiệm thu theo Đợt chọn trong dropdown
+window.openBangKeNT = function() {
+  const dot = swVal('sw-nt-dot');
+  openGrid('khuon_nt_kt', dot ? { dot: dot } : {});
+};
+
+// Nạp danh sách Đợt vào dropdown "Bảng kê NT đợt"
+window.loadDotOptions = async function() {
+  const sel = document.getElementById('sw-nt-dot');
+  if (!sel) return;
+  try {
+    const res = await fetch(`${API_BASE}/khuon_nt_kt?limit=500&offset=0`);
+    const data = await res.json();
+    const dots = [...new Set((data.list || []).map(r => r.dot).filter(Boolean))].sort();
+    sel.innerHTML = '<option value="">-- Tất cả đợt --</option>' +
+      dots.map(d => `<option value="${d}">${d}</option>`).join('');
+  } catch (e) { /* giữ nguyên dropdown rỗng nếu lỗi mạng */ }
+};
+document.addEventListener('DOMContentLoaded', () => window.loadDotOptions());
 
 function renderGridContainer(container) {
   const tableConfig = TABLES[currentGridTable];

@@ -57,16 +57,17 @@
                 <button class="sw-btn" onclick="openGrid('tonghop_phoi')"><span class="sw-dot"></span> Bảng tổng hợp số liệu - Phôi</button>
                 
                 <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px">
-                  <label><i class="fas fa-lock" style="color:#94a3b8; margin-right:3px;"></i> Lọc Tổng khuôn</label>
-                  <input type="text" id="sw-filter-ten" style="width: 25px;" disabled>
-                  <input type="date" id="sw-filter-date1" style="width: 100px;" disabled>
-                  <input type="date" id="sw-filter-date2" style="width: 100px;" disabled>
-                  <input type="text" id="sw-filter-dh" style="width: 25px;" value="30X" disabled>
+                  <label title="Tên khuôn / khoảng ngày / đơn hàng"><i class="fas fa-filter" style="color:#38bdf8; margin-right:3px;"></i> Lọc Tổng khuôn</label>
+                  <input type="text" id="sw-filter-ten" style="width: 50px;" placeholder="Tên">
+                  <input type="date" id="sw-filter-date1" style="width: 100px;">
+                  <input type="date" id="sw-filter-date2" style="width: 100px;">
+                  <input type="text" id="sw-filter-dh" style="width: 40px;" placeholder="ĐH">
+                  <button class="sw-btn" style="width:52px;flex:none;padding:2px" onclick="searchTongKhuon()">Lọc</button>
                 </div>
-                
+
                 <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px">
-                  <button class="sw-btn" style="flex:1" onclick="openGrid('nhan_khuon')"><span class="sw-dot"></span> Vào nhập khuôn</button>
-                  <input type="text" style="width: 70px;">
+                  <button class="sw-btn" style="flex:1" onclick="openNhanKhuon('sw-nhankhuon-hang')"><span class="sw-dot"></span> Vào nhập khuôn</button>
+                  <input type="text" id="sw-nhankhuon-hang" style="width: 70px;" placeholder="Hãng">
                 </div>
 
                 <button class="sw-btn" onclick="openGrid('tong_khuon')"><span class="sw-dot orange-dot"></span> Tìm sửa đợt Khuôn</button>
@@ -80,20 +81,18 @@
                 </div>
                 
                 <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px">
-                  <button class="sw-btn" style="flex:1" onclick="openGrid('dat_khuon')"><span class="sw-dot"></span> Kiểm tra đặt Khuôn</button>
-                  <input type="text" style="width: 60px;" placeholder="5/14/2020">
-                  <input type="text" style="width: 15px;">
-                  <input type="text" style="width: 15px;">
+                  <button class="sw-btn" style="flex:1" onclick="openDatKhuon()"><span class="sw-dot"></span> Kiểm tra đặt Khuôn</button>
+                  <input type="text" id="sw-datkhuon-ten" style="width: 90px;" placeholder="Tên khuôn">
                 </div>
 
                 <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px">
-                  <button class="sw-btn" style="flex:1" onclick="openGrid('don_hang')"><span class="sw-dot"></span> Đơn hàng</button>
-                  <input type="text" style="width: 60px;">
+                  <button class="sw-btn" style="flex:1" onclick="openDonHang()"><span class="sw-dot"></span> Đơn hàng</button>
+                  <input type="text" id="sw-donhang-so" style="width: 60px;" placeholder="Số đơn">
                 </div>
 
                 <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px">
-                  <button class="sw-btn" style="flex:1" onclick="openGrid('tong_khuon', {})"><span class="sw-dot"></span> Vị trí</button>
-                  <input type="text" style="width: 60px;">
+                  <button class="sw-btn" style="flex:1" onclick="openViTri()"><span class="sw-dot"></span> Vị trí</button>
+                  <input type="text" id="sw-vitri" style="width: 60px;" placeholder="Vị trí">
                 </div>
 
               </div>
@@ -104,8 +103,8 @@
               <legend class="sw-legend" style="color:#0000ff">NGHIỆM THU</legend>
               <div class="sw-content">
                 <div class="sw-input-row">
-                  <button class="sw-btn" onclick="openGrid('khuon_nt_kt')"><span class="sw-dot"></span> Bảng kê NT đợt</button>
-                  <select style="width:80px"><option></option></select>
+                  <button class="sw-btn" onclick="openBangKeNT()"><span class="sw-dot"></span> Bảng kê NT đợt</button>
+                  <select id="sw-nt-dot" style="width:100px" onchange="openBangKeNT()"><option value="">-- Đợt --</option></select>
                 </div>
               </div>
             </fieldset>
@@ -133,8 +132,8 @@
             <legend class="sw-legend">BẢNG SỐ LIỆU</legend>
             <div class="sw-content">
               <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px">
-                <button class="sw-btn" style="flex:1" onclick="openGrid('nhan_khuon')"><span class="sw-dot"></span> Bảng nhận khuôn</button>
-                <input type="text" style="width: 70px;color:red;text-align:center" value="*">
+                <button class="sw-btn" style="flex:1" onclick="openNhanKhuon('sw-nhankhuon3-hang')"><span class="sw-dot"></span> Bảng nhận khuôn</button>
+                <input type="text" id="sw-nhankhuon3-hang" style="width: 70px;text-align:center" placeholder="Hãng">
               </div>
               <button class="sw-btn" onclick="openGrid('tong_khuon')"><span class="sw-dot"></span> Bảng tổng khuôn</button>
               <button class="sw-btn" onclick="openGrid('nhatky_khuon')"><span class="sw-dot"></span> Bảng nhật ký</button>
@@ -159,12 +158,11 @@
               <button class="sw-btn" onclick="openProductionReport('year')"><span class="sw-dot"></span> Sản phảm theo nam</button>
               <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px;">
                 <button class="sw-btn" onclick="timKhuon()"><span class="sw-dot"></span> Vào khuôn</button>
-                <input type="text" style="width: 70px;">
+                <input type="text" id="sw-vaokhuon" style="width: 70px;" placeholder="Tên khuôn">
               </div>
               <div class="sw-input-row" style="margin-top:2px;margin-bottom:2px;">
                 <button class="sw-btn" onclick="timKhuon()"><span class="sw-dot"></span> Tìm Khuôn</button>
-                <input type="text" style="width: 30px;">
-                <input type="text" style="width: 60px;color:red" value="1/1/2019">
+                <input type="text" id="sw-timkhuon" style="width: 90px;" placeholder="Tên khuôn">
               </div>
             </div>
           </fieldset>
@@ -176,8 +174,8 @@
     </div>
   </main>
 
-  <script src="js/api_v2.js?v=41"></script>
-  <script src="js/dashboard_v2.js?v=41"></script>
-  <script src="js/access_grid.js?v=41"></script>
+  <script src="js/api_v2.js?v=43"></script>
+  <script src="js/dashboard_v2.js?v=43"></script>
+  <script src="js/access_grid.js?v=43"></script>
 </body>
 </html>
