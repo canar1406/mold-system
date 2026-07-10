@@ -754,6 +754,15 @@ body {
 .sort-caret { font-size: 10px; color: var(--accent); }
 .cell-delete { text-align: center; color: var(--danger); cursor: pointer; }
 
+/* Dòng vừa được thêm mới (giữ nguyên tại chỗ để nhập tiếp) — nhấp nháy nhẹ để dễ nhận ra */
+.new-row-flash {
+  animation: new-row-glow 2.2s ease-out 1;
+}
+@keyframes new-row-glow {
+  0%   { background-color: var(--accent-tint-mid); }
+  100% { background-color: transparent; }
+}
+
 .report-chart-box {
   overflow-x: auto;
   border: 1px solid var(--border-strong);

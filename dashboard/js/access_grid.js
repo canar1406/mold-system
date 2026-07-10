@@ -430,11 +430,11 @@ function renderGridContainer(container) {
           <thead>
             <tr>
               <th style="min-width: 30px;"></th>
-              ${tableConfig.columns.map(c => `<th style="cursor:pointer; min-width:${c.width || '100px'}" onclick="handleMainSort('${c.key}')">${c.label} <span style="font-size:10px;color:#00f0ff">↕</span></th>`).join('')}
+              ${tableConfig.columns.map(c => `<th style="cursor:pointer; min-width:${c.width || '100px'}" onclick="handleMainSort('${c.key}')">${c.label} <span style="font-size:10px;color:var(--accent)">↕</span></th>`).join('')}
               <th style="min-width: 40px;">Xóa</th>
             </tr>
             <tr class="filter-row">
-              <th><i class="fas fa-search" style="color:#64748b"></i></th>
+              <th><i class="fas fa-search" style="color:var(--text-muted)"></i></th>
               ${tableConfig.columns.map(c => `<th><input type="text" class="col-filter" data-col="${c.key}" placeholder="Lọc..." oninput="handleFilterInput(this)"></th>`).join('')}
               <th></th>
             </tr>
@@ -449,7 +449,7 @@ function renderGridContainer(container) {
         <span id="grid-record-count" style="font-weight: 500;">Record: 0</span>
         <div style="flex: 1"></div>
         <button class="pagination-btn" onclick="changeGridPage(-1)">◀</button>
-        <select id="grid-page-select" onchange="jumpToGridPage(this.value)" style="background: rgba(15, 23, 42, 0.8); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 4px; outline: none; font-weight: bold; cursor: pointer; padding: 4px 12px; appearance: none; text-align: center; box-shadow: 0 0 10px rgba(56,189,248,0.2);"><option value="1">Page 1</option></select>
+        <select id="grid-page-select" onchange="jumpToGridPage(this.value)" style="background: var(--input-bg); color: var(--accent-2); border: 1px solid var(--border-neon); border-radius: 4px; outline: none; font-weight: bold; cursor: pointer; padding: 4px 12px; appearance: none; text-align: center; box-shadow: 0 0 10px var(--accent-tint-mid);"><option value="1">Page 1</option></select>
         <button class="pagination-btn" onclick="changeGridPage(1)">▶</button>
       </div>
     </div>
@@ -510,7 +510,7 @@ async function loadGridData() {
     if (selectEl) {
       let opts = '';
       for (let i = 1; i <= totalPages; i++) {
-        opts += `<option value="${i}" ${i === gridPage ? 'selected' : ''} style="background: #0f172a; color: #e2e8f0; font-weight: 500;">Page ${i}</option>`;
+        opts += `<option value="${i}" ${i === gridPage ? 'selected' : ''} style="background: var(--bg-sub); color: var(--text-main); font-weight: 500;">Page ${i}</option>`;
       }
       selectEl.innerHTML = opts;
     }
@@ -538,7 +538,7 @@ function renderGridRows(list, tbody) {
     if (tableConfig.subdatasheet) {
       let pKey = tableConfig.parentKey || tableConfig.subKey;
       // Dùng idx làm DOM id (giá trị khóa có thể chứa khoảng trắng/ký tự lạ)
-      html += `<td class="expand-cell" onclick="toggleSubdatasheet(this, '${idx}', '${String(row[pKey] || '').replace(/'/g, "\\'")}')"><span class="expand-btn" style="cursor:pointer;font-weight:bold;color:#38bdf8;">+</span></td>`;
+      html += `<td class="expand-cell" onclick="toggleSubdatasheet(this, '${idx}', '${String(row[pKey] || '').replace(/'/g, "\\'")}')"><span class="expand-btn" style="cursor:pointer;font-weight:bold;color:var(--accent-2);">+</span></td>`;
     } else {
       html += `<td></td>`;
     }
@@ -548,7 +548,7 @@ function renderGridRows(list, tbody) {
       html += `<td ondblclick="editCell(this, '${c.key}')" style="cursor: cell;">${val}</td>`;
     });
 
-    html += `<td style="text-align:center; color: #ef4444; cursor: pointer;" onclick="deleteRowFromTr(this)">✖</td>`;
+    html += `<td style="text-align:center; color: var(--danger); cursor: pointer;" onclick="deleteRowFromTr(this)">✖</td>`;
     html += `</tr>`;
   });
 
@@ -590,7 +590,7 @@ async function toggleSubdatasheet(td, rowId, subKeyValue) {
         <div style="max-height: 450px; overflow-y: auto;">
           <table class="access-table" style="width: 100%;">
             <thead>
-              <tr>${TABLES[tableConfig.subdatasheet].columns.map((c, i) => `<th style="cursor:pointer" onclick="handleClientSubSort(this, '${rowId}', ${i})">${c.label} <span style="font-size:10px;color:#00f0ff">↕</span></th>`).join('')}</tr>
+              <tr>${TABLES[tableConfig.subdatasheet].columns.map((c, i) => `<th style="cursor:pointer" onclick="handleClientSubSort(this, '${rowId}', ${i})">${c.label} <span style="font-size:10px;color:var(--accent)">↕</span></th>`).join('')}</tr>
               <tr class="filter-row">
                 ${TABLES[tableConfig.subdatasheet].columns.map((c, i) => `<th><input type="text" class="col-filter sub-col-filter" data-col-index="${i}" placeholder="Lọc..." oninput="handleClientSubFilter('${rowId}')"></th>`).join('')}
               </tr>
@@ -725,6 +725,42 @@ async function deleteRow(id) {
   }
 }
 
+// Chèn dòng vừa tạo trực tiếp lên đầu bảng đang xem, KHÔNG load lại + sắp xếp
+// lại toàn bộ bảng — để người dùng tiếp tục double-click nhập các cột còn lại
+// mà không bị "mất dòng" do dòng mới (mới có 1 cột) bị xếp lạc sang trang khác.
+function prependNewRow(row) {
+  const activePage = document.querySelector('.page.active');
+  const tbody = activePage ? activePage.querySelector('#access-main-tbody') : document.getElementById('access-main-tbody');
+  if (!tbody) return;
+  const tableConfig = TABLES[currentGridTable];
+  const pk = getPk(currentGridTable);
+  const rowKey = row[pk] != null ? String(row[pk]) : '';
+
+  // Nếu bảng đang trống ("Không có dữ liệu") thì xóa dòng thông báo đó trước
+  if (tbody.children.length === 1 && tbody.querySelector('td[colspan]')) {
+    tbody.innerHTML = '';
+  }
+
+  const tr = document.createElement('tr');
+  tr.className = 'data-row new-row-flash';
+  tr.setAttribute('data-id', rowKey);
+  let html = `<td></td>`; // dòng mới chưa có dữ liệu con nên không cần nút mở rộng
+  tableConfig.columns.forEach(c => {
+    const val = formatCellValue(row[c.key] != null ? row[c.key] : '');
+    html += `<td ondblclick="editCell(this, '${c.key}')" style="cursor: cell;">${val}</td>`;
+  });
+  html += `<td class="cell-delete" onclick="deleteRowFromTr(this)">✖</td>`;
+  tr.innerHTML = html;
+  tbody.insertBefore(tr, tbody.firstChild);
+  tr.scrollIntoView({ block: 'center', behavior: 'smooth' });
+
+  const countEl = (document.querySelector('.page.active #grid-record-count') || document.getElementById('grid-record-count'));
+  if (countEl) {
+    const m = countEl.innerText.match(/(\d+)/);
+    if (m) countEl.innerText = `Record: ${parseInt(m[1], 10) + 1}`;
+  }
+}
+
 async function addNewRow() {
   const tableConfig = TABLES[currentGridTable];
   const pk = getPk(currentGridTable);
@@ -738,14 +774,15 @@ async function addNewRow() {
   try {
     const payload = {};
     payload[promptCol.key] = newValue;
-    
+
     const res = await fetch(`${API_BASE}/${currentGridTable}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
     if (!res.ok) throw new Error('API Error');
-    loadGridData();
+    const newRow = await res.json();
+    prependNewRow(newRow);
   } catch (e) {
     alert('Lỗi khi thêm: ' + e.message);
   }
@@ -935,11 +972,11 @@ window.renderRightGrid = function(table) {
           <thead>
             <tr>
               <th style="width: 30px;"></th>
-              ${tableConfig.columns.map(c => `<th style="cursor:pointer" onclick="handleRightSort('${c.key}', '${table}')">${c.label} <span style="font-size:10px;color:#00f0ff">↕</span></th>`).join('')}
+              ${tableConfig.columns.map(c => `<th style="cursor:pointer" onclick="handleRightSort('${c.key}', '${table}')">${c.label} <span style="font-size:10px;color:var(--accent)">↕</span></th>`).join('')}
               <th style="width: 40px;">Xóa</th>
             </tr>
             <tr class="filter-row">
-              <th><i class="fas fa-search" style="color:#64748b"></i></th>
+              <th><i class="fas fa-search" style="color:var(--text-muted)"></i></th>
               ${tableConfig.columns.map(c => `<th><input type="text" class="col-filter" data-col="${c.key}" placeholder="Lọc..." oninput="handleRightFilterInput(this, '${table}')"></th>`).join('')}
               <th></th>
             </tr>
@@ -983,7 +1020,7 @@ window.loadRightGridData = async function(table) {
             html += `<td ondblclick="editRightCell(this, '${table}', '${rowKey}', '${c.key}')">${val}</td>`;
           }
         });
-        html += `<td style="text-align:center; color: #ef4444; cursor: pointer;" onclick="deleteRightRow('${table}', '${rowKey}')">✖</td>`;
+        html += `<td style="text-align:center; color: var(--danger); cursor: pointer;" onclick="deleteRightRow('${table}', '${rowKey}')">✖</td>`;
         html += `</tr>`;
       });
     }
@@ -1006,6 +1043,37 @@ window.updateRightCheckbox = async function(table, id, col, isChecked) {
   }
 };
 
+// Chèn dòng vừa tạo lên đầu bảng phải, không load lại toàn bộ (tránh mất dòng do sort/paginate)
+function prependNewRightRow(table, row) {
+  const tbody = document.getElementById('right-tbody');
+  if (!tbody) return;
+  const tableConfig = TABLES[table];
+  const pk = getPk(table);
+  const rowKey = String(row[pk] != null ? row[pk] : '');
+
+  if (tbody.children.length === 1 && tbody.querySelector('td[colspan]')) {
+    tbody.innerHTML = '';
+  }
+
+  const tr = document.createElement('tr');
+  tr.className = 'data-row new-row-flash';
+  tr.setAttribute('data-id', rowKey.replace(/"/g, '&quot;'));
+  let html = `<td></td>`;
+  tableConfig.columns.forEach(c => {
+    const val = formatCellValue(row[c.key] != null ? row[c.key] : '');
+    if (c.key === 'hong' || c.key === 'tly') {
+      const checked = (val === 'x' || val === 'X') ? 'checked' : '';
+      html += `<td style="text-align:center"><input type="checkbox" ${checked} onchange="updateRightCheckbox('${table}', '${rowKey.replace(/'/g, "\\'")}', '${c.key}', this.checked)"></td>`;
+    } else {
+      html += `<td ondblclick="editRightCell(this, '${table}', '${rowKey.replace(/'/g, "\\'")}', '${c.key}')">${val}</td>`;
+    }
+  });
+  html += `<td class="cell-delete" onclick="deleteRightRow('${table}', '${rowKey.replace(/'/g, "\\'")}')">✖</td>`;
+  tr.innerHTML = html;
+  tbody.insertBefore(tr, tbody.firstChild);
+  tr.scrollIntoView({ block: 'center', behavior: 'smooth' });
+}
+
 window.addNewRightRow = async function(table) {
   try {
     const res = await fetch(`${API_BASE}/${table}`, {
@@ -1014,7 +1082,8 @@ window.addNewRightRow = async function(table) {
       body: JSON.stringify({ ngay: new Date().toISOString().split('T')[0] })
     });
     if (res.ok) {
-      loadRightGridData(table);
+      const newRow = await res.json();
+      prependNewRightRow(table, newRow);
     } else {
       alert('Không thể thêm dòng mới');
     }
