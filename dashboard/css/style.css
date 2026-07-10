@@ -1,26 +1,111 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;500;600&display=swap');
 
-:root {
+/* ============================================================
+   THEME TOKENS
+   Mặc định = DARK. Light mode override ở khối [data-theme="light"].
+   Mọi màu trong app phải dùng biến ở đây (không hardcode) để 2 theme
+   cùng hoạt động — kể cả các inline style dựng bằng JS.
+   ============================================================ */
+:root, [data-theme="dark"] {
   --bg-main: #050b14;
+  --bg-glow: #0d1e3d;              /* tâm gradient nền */
   --bg-panel: rgba(13, 22, 38, 0.7);
+  --bg-sub: #0f172a;               /* nền bảng con / select */
+  --bg-sub-alt: #1e293b;           /* nền vùng bảng con */
+
   --border-neon: rgba(0, 240, 255, 0.3);
+  --border-soft: rgba(255, 255, 255, 0.05);
+  --border-mid: rgba(255, 255, 255, 0.1);
+  --border-strong: #475569;
+
   --text-main: #e2e8f0;
   --text-muted: #94a3b8;
+  --text-strong: #ffffff;          /* chữ khi hover */
+  --on-accent: #000000;            /* chữ nằm trên nền accent */
+
   --accent: #00f0ff;
   --accent-hover: #00c3d9;
+  --accent-2: #38bdf8;             /* xanh phụ: tiêu đề lưới, cột biểu đồ */
   --accent-warning: #f59e0b;
   --danger: #ef4444;
+  --logout: #f44336;
+
+  --accent-tint: rgba(0, 240, 255, 0.1);
+  --accent-tint-soft: rgba(0, 240, 255, 0.05);
+  --accent-tint-mid: rgba(0, 240, 255, 0.2);
+  --accent-glow: rgba(0, 240, 255, 0.4);
+
+  --btn-bg: rgba(255, 255, 255, 0.02);
+  --btn-bg-hover: rgba(255, 255, 255, 0.05);
+  --input-bg: rgba(0, 0, 0, 0.3);
+  --input-edit-bg: #ffffff;        /* ô inline-edit */
+  --input-edit-fg: #000000;
+  --th-bg: #0b1120;
+
+  --shadow: rgba(0, 0, 0, 0.3);
+  --shadow-strong: rgba(0, 0, 0, 0.5);
+  --overlay-bg: rgba(5, 11, 20, 0.9);
+  --scroll-track: rgba(0, 0, 0, 0.2);
+
+  --edit-ok: #065f46;
+  --edit-err: #991b1b;
+}
+
+[data-theme="light"] {
+  --bg-main: #eef2f7;
+  --bg-glow: #cfe2f8;
+  --bg-panel: rgba(255, 255, 255, 0.85);
+  --bg-sub: #ffffff;
+  --bg-sub-alt: #e8eef6;
+
+  --border-neon: rgba(2, 132, 199, 0.35);
+  --border-soft: rgba(15, 23, 42, 0.08);
+  --border-mid: rgba(15, 23, 42, 0.16);
+  --border-strong: #94a3b8;
+
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-strong: #0b1120;
+  --on-accent: #ffffff;
+
+  --accent: #0284c7;
+  --accent-hover: #0369a1;
+  --accent-2: #0369a1;
+  --accent-warning: #b45309;
+  --danger: #dc2626;
+  --logout: #dc2626;
+
+  --accent-tint: rgba(2, 132, 199, 0.10);
+  --accent-tint-soft: rgba(2, 132, 199, 0.06);
+  --accent-tint-mid: rgba(2, 132, 199, 0.20);
+  --accent-glow: rgba(2, 132, 199, 0.30);
+
+  --btn-bg: rgba(15, 23, 42, 0.02);
+  --btn-bg-hover: rgba(15, 23, 42, 0.05);
+  --input-bg: #ffffff;
+  --input-edit-bg: #ffffff;
+  --input-edit-fg: #0f172a;
+  --th-bg: #dde5ee;
+
+  --shadow: rgba(15, 23, 42, 0.10);
+  --shadow-strong: rgba(15, 23, 42, 0.16);
+  --overlay-bg: rgba(226, 232, 240, 0.92);
+  --scroll-track: rgba(15, 23, 42, 0.06);
+
+  --edit-ok: #bbf7d0;
+  --edit-err: #fecaca;
 }
 
 body {
   margin: 0;
   padding: 0;
   background: var(--bg-main);
-  background-image: radial-gradient(circle at 50% 0%, #0d1e3d 0%, transparent 70%);
+  background-image: radial-gradient(circle at 50% 0%, var(--bg-glow) 0%, transparent 70%);
   color: var(--text-main);
   font-family: 'Inter', sans-serif;
   height: 100vh;
   overflow: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 * {
@@ -28,12 +113,44 @@ body {
 }
 
 ::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); }
-::-webkit-scrollbar-thumb { background: rgba(0, 240, 255, 0.2); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(0, 240, 255, 0.5); }
+::-webkit-scrollbar-track { background: var(--scroll-track); }
+::-webkit-scrollbar-thumb { background: var(--accent-tint-mid); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
 .page { display: none; height: 100%; width: 100%; }
 .page.active { display: block; }
+
+/* THEME TOGGLE (nút nổi góc dưới phải, hiện ở mọi màn hình) */
+.theme-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10000;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid var(--border-neon);
+  background: var(--bg-panel);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--accent);
+  font-size: 17px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px var(--shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+}
+.theme-toggle:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 18px var(--accent-glow);
+  color: var(--accent-hover);
+}
+/* Hiện icon phù hợp theo theme */
+.theme-toggle .icon-light { display: none; }
+[data-theme="light"] .theme-toggle .icon-light { display: inline; }
+[data-theme="light"] .theme-toggle .icon-dark { display: none; }
 
 /* MAIN DASHBOARD */
 .main-container { height: 100%; width: 100%; }
@@ -74,11 +191,11 @@ body {
   font-weight: 500;
   font-family: 'Orbitron', sans-serif;
   display: inline-block;
-  background: rgba(0, 240, 255, 0.1);
+  background: var(--accent-tint);
   border: 1px solid var(--border-neon);
   border-radius: 4px;
   padding: 8px 40px;
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+  box-shadow: 0 0 15px var(--accent-tint);
 }
 
 .switchboard-grid {
@@ -98,7 +215,7 @@ body {
   background: var(--bg-panel);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-soft);
   border-top: 1px solid var(--border-neon);
   border-radius: 8px;
   padding: 25px 15px 15px 15px;
@@ -107,20 +224,20 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 20px var(--shadow);
   transition: all 0.3s ease;
   margin: 0;
 }
 .sw-group:hover {
   border-top: 1px solid var(--accent);
-  box-shadow: 0 4px 25px rgba(0, 240, 255, 0.15);
+  box-shadow: 0 4px 25px var(--accent-tint);
 }
 
 .sw-legend {
   position: absolute;
   top: -12px;
   left: 15px;
-  color: var(--bg-main);
+  color: var(--on-accent);
   background: var(--accent);
   font-size: 11px;
   font-weight: 700;
@@ -128,7 +245,7 @@ body {
   letter-spacing: 1px;
   padding: 4px 10px;
   border-radius: 4px;
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+  box-shadow: 0 0 10px var(--accent-glow);
 }
 
 .sw-content {
@@ -138,8 +255,8 @@ body {
 }
 
 .sw-btn {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--btn-bg);
+  border: 1px solid var(--border-soft);
   color: var(--text-main);
   text-align: left;
   display: flex;
@@ -154,10 +271,10 @@ body {
 }
 
 .sw-btn:hover {
-  background: rgba(0, 240, 255, 0.1);
+  background: var(--accent-tint);
   border: 1px solid var(--border-neon);
   transform: translateX(4px);
-  color: #fff;
+  color: var(--text-strong);
 }
 
 .sw-dot {
@@ -184,8 +301,8 @@ body {
   color: var(--text-muted);
 }
 .sw-input-row input, .sw-input-row select {
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--input-bg);
+  border: 1px solid var(--border-mid);
   color: var(--text-main);
   height: 28px;
   font-size: 12px;
@@ -198,12 +315,12 @@ body {
 }
 .sw-input-row input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
+  box-shadow: 0 0 8px var(--accent-tint-mid);
 }
 
 .sw-badge {
   background: var(--accent-warning);
-  color: #000;
+  color: var(--on-accent);
   padding: 2px 6px;
   border-radius: 12px;
   font-size: 10px;
@@ -258,18 +375,18 @@ body {
 
 .chart-card {
   background: var(--bg-panel);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-soft);
   border-radius: 8px;
   display: flex;
   flex-direction: column;
   height: 100%;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  box-shadow: 0 10px 30px var(--shadow-strong);
   backdrop-filter: blur(10px);
 }
 
 .chart-header {
   padding: 15px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-soft);
   display: flex;
   align-items: center;
   gap: 15px;
@@ -278,7 +395,7 @@ body {
 .btn-toggle-menu {
   background: transparent;
   color: var(--text-main);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-mid);
   border-radius: 4px;
   padding: 8px 12px;
   cursor: pointer;
@@ -289,7 +406,7 @@ body {
   transition: all 0.2s;
 }
 .btn-toggle-menu:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--btn-bg-hover);
   border-color: var(--accent);
   color: var(--accent);
 }
@@ -313,17 +430,18 @@ body {
   transition: all 0.2s;
 }
 .btn-primary {
-  background: rgba(0, 240, 255, 0.1);
+  background: var(--accent-tint);
   color: var(--accent);
   border: 1px solid var(--accent);
 }
-.btn-primary:hover { background: var(--accent); color: #000; box-shadow: 0 0 15px var(--accent); }
+.btn-primary:hover { background: var(--accent); color: var(--on-accent); box-shadow: 0 0 15px var(--accent); }
 .btn-danger {
-  background: rgba(239, 68, 68, 0.2);
+  background: var(--accent-tint);
+  background: color-mix(in srgb, var(--danger) 18%, transparent);
   color: var(--danger);
-  border: 1px solid rgba(239, 68, 68, 0.5);
+  border: 1px solid color-mix(in srgb, var(--danger) 50%, transparent);
 }
-.btn-danger:hover { background: var(--danger); color: white; }
+.btn-danger:hover { background: var(--danger); color: #fff; }
 
 /* TABLE */
 .access-table-wrapper {
@@ -337,35 +455,35 @@ body {
   font-size: 13px;
 }
 .access-table th, .access-table td {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-soft);
   padding: 12px 15px;
   white-space: nowrap;
   color: var(--text-muted);
 }
 .access-table tbody tr:not(.sub-row):hover > td {
-  background: rgba(0, 240, 255, 0.05);
+  background: var(--accent-tint-soft);
   color: var(--text-main);
 }
 .access-table th {
-  background: #0b1120;
+  background: var(--th-bg);
   color: var(--text-main);
   font-weight: 600;
   position: sticky;
   top: 0;
   z-index: 10;
   text-align: left;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--border-mid);
 }
 .access-table .filter-row th {
   top: 42px; /* Height of the first row */
-  background: #0b1120;
+  background: var(--th-bg);
   padding: 8px 15px;
   border-bottom: 1px solid var(--border-neon);
 }
 .col-filter {
   width: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--input-bg);
+  border: 1px solid var(--border-mid);
   color: var(--text-main);
   padding: 6px 10px;
   border-radius: 4px;
@@ -375,13 +493,20 @@ body {
 .col-filter:focus {
   border-color: var(--accent);
   outline: none;
-  box-shadow: 0 0 5px rgba(0, 240, 255, 0.3);
+  box-shadow: 0 0 5px var(--border-neon);
+}
+
+/* Ô inline-edit khi double-click vào ô dữ liệu */
+.inline-edit {
+  background: var(--input-edit-bg) !important;
+  color: var(--input-edit-fg) !important;
+  border: 1px solid var(--accent);
 }
 
 .access-grid-footer {
   padding: 12px 20px;
-  background: rgba(0, 0, 0, 0.3);
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--input-bg);
+  border-top: 1px solid var(--border-soft);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -394,8 +519,8 @@ body {
   gap: 10px;
 }
 .pagination-controls button {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--btn-bg-hover);
+  border: 1px solid var(--border-mid);
   color: var(--text-main);
   border-radius: 4px;
   padding: 4px 10px;
@@ -403,15 +528,26 @@ body {
   transition: all 0.2s;
 }
 .pagination-controls button:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--border-mid);
   border-color: var(--accent);
   color: var(--accent);
+}
+
+/* Dropdown chọn trang ở footer (dựng inline trong JS) */
+#grid-page-select {
+  background: var(--input-bg);
+  color: var(--accent);
+  border: 1px solid var(--border-neon);
+}
+#grid-page-select option {
+  background: var(--bg-sub);
+  color: var(--text-main);
 }
 
 /* LOGIN */
 .login-overlay {
   position: fixed; inset: 0;
-  background: rgba(5, 11, 20, 0.9);
+  background: var(--overlay-bg);
   backdrop-filter: blur(15px);
   display: flex; align-items: center; justify-content: center;
   z-index: 9999;
@@ -422,7 +558,7 @@ body {
   padding: 40px;
   border-radius: 12px;
   width: 340px;
-  box-shadow: 0 0 40px rgba(0, 240, 255, 0.1);
+  box-shadow: 0 0 40px var(--accent-tint);
   text-align: center;
 }
 .login-box h2 {
@@ -432,9 +568,9 @@ body {
 }
 .login-box input {
   width: 100%;
-  background: rgba(0,0,0,0.5);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: white;
+  background: var(--input-bg);
+  border: 1px solid var(--border-mid);
+  color: var(--text-main);
   padding: 12px;
   margin-bottom: 15px;
   border-radius: 6px;
@@ -443,7 +579,7 @@ body {
 .login-box button {
   width: 100%;
   background: var(--accent);
-  color: #000;
+  color: var(--on-accent);
   font-weight: 700;
   border: none;
   padding: 12px;
@@ -452,6 +588,7 @@ body {
   margin-top: 10px;
 }
 .login-box button:hover { box-shadow: 0 0 15px var(--accent); }
+.error-text { color: var(--danger); font-size: 13px; margin-bottom: 10px; }
 
 /* OVERRIDE SWITCHBOARD GRID FOR SIDEBAR */
 .grid-sidebar .switchboard-grid {
@@ -493,10 +630,10 @@ body {
   width: 100%;
 }
 .grid-sidebar .sw-btn:hover {
-  background: rgba(0, 240, 255, 0.05);
+  background: var(--accent-tint-soft);
   border: none;
   border-left: 2px solid var(--accent);
-  color: white;
+  color: var(--text-strong);
   transform: translateX(0);
 }
 .grid-sidebar .sw-input-row {
@@ -509,8 +646,8 @@ body {
 }
 
 .pagination-btn {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--btn-bg-hover);
+  border: 1px solid var(--border-mid);
   color: var(--text-main);
   padding: 4px 12px;
   border-radius: 4px;
@@ -519,7 +656,7 @@ body {
   font-size: 12px;
 }
 .pagination-btn:hover {
-  background: rgba(0, 240, 255, 0.1);
+  background: var(--accent-tint);
   border-color: var(--accent);
   color: var(--accent);
 }
@@ -554,8 +691,8 @@ body {
   display: flex;
   align-items: center;
   gap: 15px;
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--input-bg);
+  border: 1px solid var(--border-mid);
   padding: 8px 15px;
   border-radius: 30px;
   backdrop-filter: blur(5px);
@@ -583,9 +720,9 @@ body {
 }
 
 .user-profile-menu .logout-btn {
-  background: rgba(244, 67, 54, 0.1);
-  color: #f44336;
-  border: 1px solid rgba(244, 67, 54, 0.3);
+  background: color-mix(in srgb, var(--logout) 12%, transparent);
+  color: var(--logout);
+  border: 1px solid color-mix(in srgb, var(--logout) 35%, transparent);
   border-radius: 50%;
   width: 35px;
   height: 35px;
@@ -597,9 +734,33 @@ body {
 }
 
 .user-profile-menu .logout-btn:hover {
-  background: #f44336;
+  background: var(--logout);
   color: #fff;
-  box-shadow: 0 0 10px rgba(244, 67, 54, 0.5);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--logout) 50%, transparent);
 }
 
+/* ============================================================
+   Các vùng do JS dựng động (bảng con, báo cáo) — dùng class thay
+   vì inline style để theme hoạt động.
+   ============================================================ */
+.sub-row > td { background: var(--bg-sub-alt) !important; }
+.sub-panel {
+  background: var(--bg-sub);
+  padding: 10px;
+  border: 1px solid var(--border-strong);
+}
+.sub-title { color: var(--accent-2); font-weight: bold; margin-bottom: 10px; }
+.expand-btn { cursor: pointer; font-weight: bold; color: var(--accent-2); }
+.sort-caret { font-size: 10px; color: var(--accent); }
+.cell-delete { text-align: center; color: var(--danger); cursor: pointer; }
 
+.report-chart-box {
+  overflow-x: auto;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 15px;
+  background: var(--bg-sub);
+}
+.report-bar { fill: var(--accent-2); }
+.report-axis-label { font-size: 9px; fill: var(--text-muted); }

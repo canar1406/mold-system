@@ -1,6 +1,14 @@
 // Logic Đăng Nhập cho Giao diện Access Clone
 const API_REF = API;
 
+// ===== CHUYỂN GIAO DIỆN SÁNG / TỐI =====
+window.toggleTheme = function () {
+  const cur = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+  const next = cur === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  try { localStorage.setItem('ui_theme', next); } catch (e) {}
+};
+
 async function init() {
   const btnLogout = document.getElementById('btn-logout');
   const loginOverlay = document.getElementById('login-overlay');

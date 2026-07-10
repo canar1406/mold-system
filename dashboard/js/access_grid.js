@@ -584,9 +584,9 @@ async function toggleSubdatasheet(td, rowId, subKeyValue) {
   
   subTr.innerHTML = `
     <td></td>
-    <td colspan="${colsCount - 1}" style="padding: 10px; background: #1e293b;">
-      <div style="background: #0f172a; padding: 10px; border: 1px solid #475569;">
-        <div style="color: #38bdf8; font-weight: bold; margin-bottom: 10px;">📋 Lịch sử / Chi tiết của: ${subKeyValue}</div>
+    <td colspan="${colsCount - 1}" style="padding: 10px;">
+      <div class="sub-panel">
+        <div class="sub-title">📋 Lịch sử / Chi tiết của: ${subKeyValue}</div>
         <div style="max-height: 450px; overflow-y: auto;">
           <table class="access-table" style="width: 100%;">
             <thead>
@@ -1042,19 +1042,17 @@ window.editRightCell = function(td, table, id, colKey) {
   input.value = currentVal;
   input.style.width = '100%';
   input.style.boxSizing = 'border-box';
-  input.style.background = '#1e293b';
-  input.style.color = '#fff';
-  input.style.border = '1px solid #38bdf8';
-  
+  input.className = 'inline-edit';
+
   td.innerHTML = '';
   td.appendChild(input);
   input.focus();
-  
+
   input.onblur = async () => {
     const newVal = input.value;
     td.innerText = newVal;
     if (newVal !== currentVal) {
-      td.style.background = '#065f46';
+      td.style.background = 'var(--edit-ok)';
       try {
         await fetch(`${API_BASE}/${table}/${encodeURIComponent(id)}`, {
           method: 'PUT',
@@ -1063,7 +1061,7 @@ window.editRightCell = function(td, table, id, colKey) {
         });
         setTimeout(() => td.style.background = '', 1000);
       } catch (e) {
-        td.style.background = '#991b1b';
+        td.style.background = 'var(--edit-err)';
       }
     }
   };
@@ -1192,11 +1190,11 @@ window.openProductionReport = async function(by) {
       const h = Math.round((kg / maxKg) * (chartH - 30));
       const x = 30 + i * (bw + gap);
       const y = chartH - h - 20;
-      bars += `<rect x="${x}" y="${y}" width="${bw}" height="${h}" fill="#38bdf8" rx="3">
+      bars += `<rect class="report-bar" x="${x}" y="${y}" width="${bw}" height="${h}" rx="3">
                  <title>${label(r)}: ${kg.toLocaleString('vi-VN')} kg</title></rect>
-               <text x="${x + bw/2}" y="${chartH - 6}" font-size="9" fill="#94a3b8" text-anchor="middle" transform="rotate(0)">${label(r)}</text>`;
+               <text class="report-axis-label" x="${x + bw/2}" y="${chartH - 6}" text-anchor="middle">${label(r)}</text>`;
     });
-    const svg = `<div style="overflow-x:auto;border:1px solid #334155;border-radius:8px;padding:10px;margin-bottom:15px;background:#0f172a;">
+    const svg = `<div class="report-chart-box">
       <svg width="${svgW}" height="${chartH + 10}" style="min-width:100%">${bars}</svg></div>`;
 
     let table = `<table class="access-table" style="width:100%"><thead><tr>

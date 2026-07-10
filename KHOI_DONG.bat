@@ -2,6 +2,7 @@
 color 0B
 echo =======================================================
 echo     CHUONG TRINH KHOI DONG HE THONG KM21.00
+echo     (Tu dong khoi dong Docker + kiem tra/sua loi CSDL)
 echo =======================================================
 echo.
 echo Dang yeu cau quyen Quan Tri (Administrator)...

@@ -7,9 +7,27 @@
   <link rel="icon" type="image/png" href="img/logo.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=38">
+  <link rel="stylesheet" href="css/style.css?v=44">
 </head>
 <body>
+  <!-- Áp theme sớm để tránh chớp màu (đọc lựa chọn đã lưu) -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('ui_theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+
+  <!-- Nút chuyển Dark / Light (nổi góc dưới phải) -->
+  <button id="theme-toggle" class="theme-toggle" title="Chuyển giao diện Sáng/Tối" onclick="toggleTheme()">
+    <i class="fas fa-moon icon-dark"></i>
+    <i class="fas fa-sun icon-light"></i>
+  </button>
+
   <!-- Màn hình Đăng nhập (Login Overlay) -->
   <div id="login-overlay" class="login-overlay">
     <div class="login-box">
@@ -174,8 +192,8 @@
     </div>
   </main>
 
-  <script src="js/api_v2.js?v=43"></script>
-  <script src="js/dashboard_v2.js?v=43"></script>
-  <script src="js/access_grid.js?v=43"></script>
+  <script src="js/api_v2.js?v=44"></script>
+  <script src="js/dashboard_v2.js?v=44"></script>
+  <script src="js/access_grid.js?v=44"></script>
 </body>
 </html>
